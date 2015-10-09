@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
+from django.db.models import Q
 from rest_framework import serializers, viewsets
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from rest_framework.permissions import IsAuthenticated
@@ -16,9 +17,15 @@ class MealSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class MealViewSet(viewsets.ModelViewSet):
-    queryset = Meal.objects.all()
+    queryset = Meal.objects.none()
     serializer_class = MealSerializer
     permission_classes = (IsOwnerOrManagerOrAdmin,)
+
+    def get_queryset(self):
+        user = self.request.user
+        if user.is_superuser or user.profile.role == 'A':
+            return Meal.objects.all()
+        return Meal.objects.filter(Q(user=user) | Q(user__profile__manager=user))
 
 
 class ProfileSerializer(serializers.HyperlinkedModelSerializer):
@@ -29,9 +36,15 @@ class ProfileSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class ProfileViewSet(viewsets.ModelViewSet):
-    queryset = Profile.objects.all()
+    queryset = Profile.objects.none()
     serializer_class = ProfileSerializer
     permission_classes = (IsOwnerOrManagerOrAdmin,)
+
+    def get_queryset(self):
+        user = self.request.user
+        if user.is_superuser or user.profile.role == 'A':
+            return Profile.objects.all()
+        return Profile.objects.filter(Q(user=user) | Q(manager=user))
 
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
@@ -67,6 +80,12 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class UserViewSet(viewsets.ModelViewSet):
-    queryset = User.objects.all()
+    queryset = User.objects.none()
     serializer_class = UserSerializer
     permission_classes = (IsOwnerOrManagerOrAdmin,)
+
+    def get_queryset(self):
+        user = self.request.user
+        if user.is_superuser or user.profile.role == 'A':
+            return User.objects.all()
+        return User.objects.filter(Q(id=user.id) | Q(manager__id=user.id))
