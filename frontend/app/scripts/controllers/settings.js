@@ -2,13 +2,13 @@
 
 /**
  * @ngdoc function
- * @name frontendApp.controller:AboutCtrl
+ * @name calories.controller:AboutCtrl
  * @description
  * # AboutCtrl
- * Controller of the frontendApp
+ * Controller of the calories
  */
-angular.module('frontendApp')
-  .controller('AboutCtrl', function () {
+angular.module('calories')
+  .controller('SettingCtrl', function () {
     this.awesomeThings = [
       'HTML5 Boilerplate',
       'AngularJS',

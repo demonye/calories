@@ -2,21 +2,23 @@
 
 /**
  * @ngdoc overview
- * @name frontendApp
+ * @name calories
  * @description
- * # frontendApp
+ * # calories
  *
  * Main module of the application.
  */
 angular
-  .module('frontendApp', [
-    'ngAnimate',
-    'ngCookies',
-    'ngResource',
-    'ngRoute',
+  .module('calories', [
+    // 'ngCookies',
     'ngSanitize',
-    'ngTouch'
-  ])
+    'ng-token-auth',
+    'ui.router',
+    'restangular',
+    'infinite-scroll',
+    'xeditable'
+  ]);
+  /*
   .config(function ($routeProvider) {
     $routeProvider
       .when('/', {
@@ -33,3 +35,4 @@ angular
         redirectTo: '/'
       });
   });
+  */

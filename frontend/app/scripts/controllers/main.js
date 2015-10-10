@@ -2,16 +2,12 @@
 
 /**
  * @ngdoc function
- * @name frontendApp.controller:MainCtrl
+ * @name calories.controller:MainCtrl
  * @description
  * # MainCtrl
- * Controller of the frontendApp
+ * Controller of the calories
  */
-angular.module('frontendApp')
-  .controller('MainCtrl', function () {
-    this.awesomeThings = [
-      'HTML5 Boilerplate',
-      'AngularJS',
-      'Karma'
-    ];
+angular.module('calories')
+  .controller('MainCtrl', function ($auth) {
+    this.auth = true;   // $auth.validateUser();
   });
