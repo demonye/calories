@@ -11,20 +11,25 @@
           <span class="icon-bar"></span>
         </button>
 
-        <a class="navbar-brand" href="#/"><h3>Calories</strong></h3>
+        <a class="navbar-brand" href="#/">
+          <strong>
+            <img class="logo" src="images/calories.png" alt="I'm Yeoman">
+            Calories
+          </strong>
+        </a>
       </div>
 
       <div class="collapse navbar-collapse" id="js-navbar-collapse">
 
-        <ul class="nav navbar-nav pull-right" ng-if="main.auth">
-          <li ui-sref-active="active">
-            <a ui-sref="index.meals">Meals</a>
-          </li>
-          <li ui-sref-active="active">
-            <a ui-sref="index.settings">Settings</a>
-          </li>
-          <li>
-            <a ng-href="#/">Log Out</a>
+        <ul class="nav navbar-nav pull-right">
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+              {{user.username}}<span class="caret"></span>
+            </a>
+            <ul class="dropdown-menu">
+              <li> <a href="">Profile</a> </li>
+              <li> <a href="" ng-click="base.logout()">Logout</a> </li>
+            </ul>
           </li>
         </ul>
       </div>
@@ -34,7 +39,7 @@
 
 <div class="container">
   <!-- Main view  -->
-  <div ui-view></div>
+  <div ui-view class="animated fadeIn"></div>
 </div>
 
 <div class="footer">

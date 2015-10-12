@@ -19,7 +19,7 @@
     <link rel="stylesheet" href="styles/style.css">
     <!-- endbuild -->
   </head>
-  <body ng-app="calories" ng-controller="MainCtrl as main">
+  <body ng-app="calories" ng-controller="BaseCtrl as base">
     <!--[if lte IE 8]>
       <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
     <![endif]-->
@@ -66,11 +66,14 @@
         <script src="scripts/directives.js"></script>
         <script src="scripts/services.js"></script>
         <script src="scripts/filters.js"></script>
+        <script src="scripts/controllers/base.js"></script>
         <script src="scripts/controllers/main.js"></script>
-        <script src="scripts/controllers/meals.js"></script>
-        <script src="scripts/controllers/settings.js"></script>
+        <script src="scripts/controllers/auth.js"></script>
+        <script src="scripts/controllers/profile.js"></script>
+        <!--
         <script src="scripts/controllers/login.js"></script>
         <script src="scripts/controllers/register.js"></script>
+        -->
         <!-- endbuild -->
 </body>
 </html>

@@ -9,5 +9,5 @@
  */
 angular.module('calories')
   .controller('MainCtrl', function ($auth) {
-    this.auth = true;   // $auth.validateUser();
+    // this.auth = $auth.validateUser();
   });

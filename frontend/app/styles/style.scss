@@ -1,0 +1,21 @@
+.auth-container {
+  .panel-body {
+    .logo {
+      padding-top: 0;
+      padding-bottom: 15px;
+      img {
+        width: 100%;
+      }
+    }
+    .forgot-password {
+      margin-top: 7px;
+    }
+  }
+}
+
+.navbar-brand {
+  .logo {
+    width: 30px;
+    margin-top: -5px;
+  }
+}
