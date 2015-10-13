@@ -1,3 +1,26 @@
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+}
+
+.main {
+  margin-top: 82px;
+}
+
+/*
+.footer {
+  background-color: #e7e7e7;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+}
+*/
+
 .auth-container {
   .panel-body {
     .logo {
@@ -5,6 +28,7 @@
       padding-bottom: 15px;
       img {
         width: 100%;
+        border-radius: 50%;
       }
     }
     .forgot-password {
@@ -18,4 +42,24 @@
     width: 30px;
     margin-top: -5px;
   }
+}
+
+.profile-left {
+  // border-right: 1px solid #e0e0e0;
+  margin-bottom: 20px;
+  .profile-avatar {
+    width: 100%;
+    margin-left: 20px;
+    img {
+      width: 120px;
+      border-radius: 50%;
+    }
+  }
+  .profile-email {
+    margin: 20px 0 20px 20px;
+  }
+}
+
+.m-b {
+  margin-bottom: 15px;
 }

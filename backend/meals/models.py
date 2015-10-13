@@ -1,12 +1,12 @@
 from django.db import models
 from django.utils import timezone
-from django.contrib.auth.models import User
-from users.models import Profile
+# from django.contrib.auth.models import User
+from users.models import MyUser
 from datetime import datetime
 
 
 class Meal(models.Model):
-    user = models.ForeignKey(User)
+    user = models.ForeignKey(MyUser)
     meal_date = models.DateField(default=timezone.now)
     meal_time = models.TimeField(default=timezone.now)
     what = models.CharField(max_length=256)

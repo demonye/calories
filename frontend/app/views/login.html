@@ -2,14 +2,16 @@
   <span class="input-group-addon">
     <i class="fa fa-user fa-fw"></i>
   </span>
-  <input type="text" class="form-control" ng-model="login.loginForm.username" placeholder="Username or Email">
+  <input type="email" class="form-control" ng-model="login.loginForm.email" placeholder="Email"
+    ng-keyup="$event.keyCode == 13 && login.submitLoginForm()">
 </div>
 
 <div class="input-group">
   <span class="input-group-addon">
     <i class="fa fa-lock fa-fw"></i>
   </span>
-  <input type="password" class="form-control" ng-model="login.loginForm.password" placeholder="Password">
+  <input type="password" class="form-control" ng-model="login.loginForm.password" placeholder="Password"
+    ng-keyup="$event.keyCode == 13 && login.submitLoginForm()">
 </div>
 
 <div class="pull-right forgot-password">

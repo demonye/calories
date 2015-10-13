@@ -1,23 +1,59 @@
-<div class="jumbotron">
-  <h1>'Allo, 'Allo!</h1>
-  <p class="lead">
-    <img src="images/yeoman.png" alt="I'm Yeoman"><br>
-    Always a pleasure scaffolding your apps.
-  </p>
-  <p><a class="btn btn-lg btn-success" ng-href="#/">Splendid!<span class="glyphicon glyphicon-ok"></span></a></p>
-</div>
-
-<div class="row marketing">
-  <h4>HTML5 Boilerplate</h4>
-  <p>
-    HTML5 Boilerplate is a professional front-end template for building fast, robust, and adaptable web apps or sites.
-  </p>
-
-  <h4>Angular</h4>
-  <p>
-    AngularJS is a toolset for building the framework most suited to your application development.
-  </p>
-
-  <h4>Karma</h4>
-  <p>Spectacular Test Runner for JavaScript.</p>
+<div class="row">
+  <div class="col-md-4 profile-left">
+    <div class="profile-avatar">
+      <img src="images/calories.png" align="center" alt="I'm Yeoman">
+    </div>
+    <div class="profile-email">
+      <i class="fa fa-envelope fa-fw"></i> {{ user.email || 'email@sample.com' }}
+    </div>
+  </div>
+  <div class="col-md-8">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h4>Personal Settings</h4>
+      </div>
+      <div class="panel-body text-muted">
+        <div class="row m-b">
+          <div class="col-sm-4">
+            <strong>Display Name</strong>
+          </div>
+          <div class="col-sm-8">
+            <a href='' editable-text="prof.profile.display_name" onbeforesave="prof.update(prof.profile, 'display_name', $data)">
+              {{ prof.profile.display_name || 'Click to Edit' }}
+            </a>
+          </div>
+        </div>
+        <div class="row m-b">
+          <div class="col-sm-4">
+            <strong>Gender</strong>
+          </div>
+          <div class="col-sm-8">
+            <a href='' editable-select="prof.profile.gender" e-ng-options="g.value as g.text for g in prof.genders" onbeforesave="prof.update(prof.profile, 'gender', $data)">
+              {{ prof.showGender() || 'Click to Select' }}
+            </a>
+          </div>
+        </div>
+        <div class="row m-b">
+          <div class="col-sm-4">
+            <strong>Age</strong>
+          </div>
+          <div class="col-sm-8">
+            <a href='' editable-number="prof.profile.age" onbeforesave="prof.update(prof.profile, 'age', $data)">
+              {{ prof.profile.age || 'Click to Edit' }}
+            </a>
+          </div>
+        </div>
+        <div class="row m-b">
+          <div class="col-sm-4">
+            <strong>Calories per Day</strong>
+          </div>
+          <div class="col-sm-8">
+            <a href='' editable-number="prof.profile.cal_per_day" onbeforesave="prof.update(prof.profile, 'cal_per_day', $data)">
+              {{ prof.profile.cal_per_day || 'Click to Edit' }}
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>

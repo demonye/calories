@@ -33,9 +33,6 @@ angular.module('calories')
     }
     return extractedData;
   });
-  toastr.options = {
-    "closeButton": true
-  };
 
   $urlMatcherFactoryProvider.strictMode(false);
   $urlRouterProvider.otherwise("/index/404");
@@ -88,7 +85,7 @@ angular.module('calories')
     .state('index.profile', {
       url: "/profile",
       templateUrl: 'views/profile.html',
-      controller: 'ProfileCtrl as profile'
+      controller: 'ProfileCtrl as prof'
     })
     .state('index.404', {
       url: "/404",
@@ -96,7 +93,12 @@ angular.module('calories')
     });
 })
 
-.run(function($rootScope, $state) {
+.run(function($rootScope, $state, editableOptions) {
+  editableOptions.theme = 'bs3';
+  toastr.options = {
+    "closeButton": true
+  };
+
   $rootScope.$on('auth:login-success', function(ev, resp) {
     $state.go('index.main');
   });
