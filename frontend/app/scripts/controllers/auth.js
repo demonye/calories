@@ -30,10 +30,7 @@ angular.module('calories')
       } else {
         $cookies.remove('loginForm');
       }
-      $auth.submitLogin(self.loginForm)
-        .then(function(resp) {
-          $rootScope.user = resp
-        });
+      $auth.submitLogin(self.loginForm);
     };
     self.showRegisterForm = function() {
       $state.go('auth.register');

@@ -16,5 +16,7 @@ angular
     'ui.router',
     'restangular',
     'infinite-scroll',
-    'xeditable'
+    'xeditable',
+    'ui.bootstrap',
+    'oitozero.ngSweetAlert'
   ]);

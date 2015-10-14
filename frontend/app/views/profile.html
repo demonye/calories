@@ -8,49 +8,173 @@
     </div>
   </div>
   <div class="col-md-8">
+
+    <uib-tabset>
+      <uib-tab>
+        <uib-tab-heading>
+          <i class="fa fa-cog"></i> Settings
+        </uib-tab-heading>
+
+        <div class="text-muted">
+          <div class="row m-sm">
+            <div class="col-sm-4">
+              <strong>Display Name</strong>
+            </div>
+            <div class="col-sm-8">
+              <a href='' editable-text="prof.editing.display_name" onbeforesave="prof.update(prof.editing, 'display_name', $data)">
+                {{ prof.editing.display_name || 'Click to Edit' }}
+              </a>
+            </div>
+          </div>
+          <div class="row m-sm">
+            <div class="col-sm-4">
+              <strong>Gender</strong>
+            </div>
+            <div class="col-sm-8">
+              <a href='' editable-select="prof.editing.gender" e-ng-options="g.value as g.text for g in prof.genders" onbeforesave="prof.update(prof.editing, 'gender', $data)">
+                {{ prof.showGender() || 'Click to Select' }}
+              </a>
+            </div>
+          </div>
+          <div class="row m-sm">
+            <div class="col-sm-4">
+              <strong>Age</strong>
+            </div>
+            <div class="col-sm-8">
+              <a href='' editable-number="prof.editing.age" onbeforesave="prof.update(prof.editing, 'age', $data)">
+                {{ prof.editing.age || 'Click to Edit' }}
+              </a>
+            </div>
+          </div>
+          <div class="row m-sm">
+            <div class="col-sm-4">
+              <strong>Calories per Day</strong>
+            </div>
+            <div class="col-sm-8">
+              <a href='' editable-number="prof.editing.cal_per_day" onbeforesave="prof.update(prof.editing, 'cal_per_day', $data)">
+                {{ prof.editing.cal_per_day || 'Click to Edit' }}
+              </a>
+            </div>
+          </div>
+          <div class="row m-sm">
+            <div class="col-sm-4">
+              <strong>Permission Level</strong>
+            </div>
+            <div class="col-sm-8">
+              <a href='' editable-number="prof.editing.perm_level" onbeforesave="prof.update(prof.editing, 'perm_level', $data)">
+                {{ prof.editing.perm_level == undefined ? 'Click to Edit' : prof.editing.perm_level }}
+              </a>
+            </div>
+          </div>
+          <div class="row m-sm">
+            <div class="col-sm-4">
+              <strong>Active</strong>
+            </div>
+            <div class="col-sm-8">
+              <a href='' editable-checkbox="prof.editing.is_active" onbeforesave="prof.update(prof.editing, 'is_active', $data)">
+                {{ prof.editing.is_active || 'Click to Edit' }}
+              </a>
+            </div>
+          </div>
+        </div>
+      </uib-tab>
+
+      <uib-tab>
+        <uib-tab-heading>
+          <i class="fa fa-plus"></i> New User
+        </uib-tab-heading>
+
+        <form class="m-t-sm text-muted">
+          <div class="row m-l-sm">
+            <div class="col-sm-4"> <strong>Email</strong></div>
+            <div class="col-sm-8">
+              <input type="email" class="form-control" ng-model="prof.newUser.email">
+            </div>
+          </div>
+          <div class="row m-l-sm">
+            <div class="col-sm-4"> <strong>Display Name</strong></div>
+            <div class="col-sm-8">
+              <input type="text" class="form-control" ng-model="prof.newUser.display_name">
+            </div>
+          </div>
+          <div class="row m-l-sm">
+            <div class="col-sm-4"> <strong>Password</strong></div>
+            <div class="col-sm-8">
+              <one-password-input password-var="prof.newUser.password"></one-password-input>
+            </div>
+          </div>
+          <div class="row m-l-sm">
+            <div class="col-sm-4"> <strong>Gender</strong></div>
+            <div class="col-sm-8">
+              <select class="form-control" ng-model="prof.newUser.gender">
+                <option ng-repeat="g in prof.genders" value="{{g.value}}">{{g.text}}</option>
+              </select>
+            </div>
+          </div>
+          <div class="row m-l-sm">
+            <div class="col-sm-4"> <strong>Age</strong></div>
+            <div class="col-sm-8">
+              <input type="number" class="form-control" ng-model="prof.newUser.age">
+            </div>
+          </div>
+          <div class="row m-l-sm">
+            <div class="col-sm-4"> <strong>Calories per Day</strong></div>
+            <div class="col-sm-8">
+              <input type="number" class="form-control" ng-model="prof.newUser.cal_per_day">
+            </div>
+          </div>
+          <div class="row m-l-sm m-b-sm">
+            <div class="col-sm-4"> <strong>Permission Level</strong></div>
+            <div class="col-sm-8">
+              <input type="number" class="form-control" ng-model="prof.newUser.perm_level">
+            </div>
+          </div>
+          <div class="row m-l-sm m-b-sm">
+            <div class="col-sm-4"> <strong>Active</strong></div>
+            <div class="col-sm-8">
+              <input type="checkbox" class="checkbox" ng-model="prof.newUser.is_active">
+            </div>
+          </div>
+        </form>
+
+        <div class="row m">
+          <div class="col-lg-12">
+            <button class="btn btn-success btn-block" ng-click="prof.save()"
+              ng-disabled="prof.savingNewUser">Save
+            </button>
+          </div>
+        </div>
+      </uib-tab>
+    </uib-tabset>
+
+    <hr>
+
     <div class="panel panel-default">
       <div class="panel-heading">
-        <h4>Personal Settings</h4>
+        <h5><strong>Users</strong></h5>
       </div>
-      <div class="panel-body text-muted">
-        <div class="row m-b">
-          <div class="col-sm-4">
-            <strong>Display Name</strong>
-          </div>
-          <div class="col-sm-8">
-            <a href='' editable-text="prof.profile.display_name" onbeforesave="prof.update(prof.profile, 'display_name', $data)">
-              {{ prof.profile.display_name || 'Click to Edit' }}
-            </a>
-          </div>
-        </div>
-        <div class="row m-b">
-          <div class="col-sm-4">
-            <strong>Gender</strong>
-          </div>
-          <div class="col-sm-8">
-            <a href='' editable-select="prof.profile.gender" e-ng-options="g.value as g.text for g in prof.genders" onbeforesave="prof.update(prof.profile, 'gender', $data)">
-              {{ prof.showGender() || 'Click to Select' }}
-            </a>
+      <div class="panel-body list-group profile-list">
+        <div class="list-group-item list-group-item-success"
+             ng-class="{'profile-active' : prof.editing.id == prof.profile.id}">
+          <div class="row">
+            <div class="col-xs-6 pointer text-info"
+              ng-click="prof.editing = prof.profile">{{ prof.profile.email }}</div>
+            <div class="col-xs-4">{{ prof.profile.display_name }}</div>
+            <div class="col-xs-2 text-center"> <span class="badge">Me</span> </div>
           </div>
         </div>
-        <div class="row m-b">
-          <div class="col-sm-4">
-            <strong>Age</strong>
-          </div>
-          <div class="col-sm-8">
-            <a href='' editable-number="prof.profile.age" onbeforesave="prof.update(prof.profile, 'age', $data)">
-              {{ prof.profile.age || 'Click to Edit' }}
-            </a>
-          </div>
-        </div>
-        <div class="row m-b">
-          <div class="col-sm-4">
-            <strong>Calories per Day</strong>
-          </div>
-          <div class="col-sm-8">
-            <a href='' editable-number="prof.profile.cal_per_day" onbeforesave="prof.update(prof.profile, 'cal_per_day', $data)">
-              {{ prof.profile.cal_per_day || 'Click to Edit' }}
-            </a>
+        <div class="list-group-item" ng-repeat="u in prof.users"
+             ng-class-even="'li-even'"
+             ng-class="{'profile-active' : prof.editing.id == u.id}">
+          <div class="row">
+            <div class="col-xs-6 pointer text-info"
+              ng-click="prof.editing = u">{{ u.email }}</div>
+            <div class="col-xs-4">{{ u.display_name }}</div>
+            <div class="col-xs-2 text-center">
+              <div class="pointer" ng-click="prof.remove(u)">
+                <i class="fa fa-trash-o"></i>
+              </div>
+            </div>
           </div>
         </div>
       </div>

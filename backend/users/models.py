@@ -23,7 +23,7 @@ class MyUserManager(BaseUserManager):
         Creates and saves a superuser with the given email and password.
         """
         user = self.create_user(email, password=password)
-        user.is_admin = True
+        user.perm_level = 0
         user.save(using=self._db)
         return user
 
@@ -40,8 +40,9 @@ class MyUser(AbstractBaseUser):
     cal_per_day = models.IntegerField(default=2500)
     gender = models.CharField(max_length=1, choices=GENDER_CHOICES, null=True, blank=True)
     age = models.SmallIntegerField(null=True, blank=True)
+    perm_level = models.SmallIntegerField(default=1)    # 0 is admin; otherwise bigger is higher
     is_active = models.BooleanField(default=True)
-    is_admin = models.BooleanField(default=False)
+    is_deleted = models.BooleanField(default=False)
 
     objects = MyUserManager()
 
@@ -70,9 +71,16 @@ class MyUser(AbstractBaseUser):
         return True
 
     @property
+    def is_admin(self):
+        return self.perm_level == 0
+
+    @property
     def is_staff(self):
         return True
 
     @property
     def displayname(self):
         return self.get_full_name()
+
+    def is_available(self):
+        return self.is_active and not self.is_deleted

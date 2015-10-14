@@ -100,7 +100,12 @@ angular.module('calories')
   };
 
   $rootScope.$on('auth:login-success', function(ev, resp) {
+    $rootScope.user = resp;
     $state.go('index.main');
+  });
+
+  $rootScope.$on('auth:validation-success', function(ev, resp) {
+    $rootScope.user = resp;
   });
 
   $rootScope.$on('auth:login-error', function(ev, reason) {
