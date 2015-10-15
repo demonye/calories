@@ -8,16 +8,13 @@
  * Controller of the calories
  */
 angular.module('calories')
-  .controller('ProfileCtrl', function($rootScope, $filter, Restangular, SweetAlert) {
+  .controller('ProfileCtrl', function($rootScope, $filter, $timeout, $auth, MyAuth, Restangular, SweetAlert) {
     var self = this,
         currUser = $rootScope.user;
     self.users = [];
     self.profile = {};
     self.editing = {};
-    self.defaultNewUser = {
-      is_active: true
-    };
-    self.newUser = self.defaultNewUser;
+    self.newUser = {};
 
     self.reload = function() {
       Restangular.all('users').getList().then(function(data) {
@@ -48,9 +45,12 @@ angular.module('calories')
       self.saveingNewUser = true;
       Restangular.all('users').post(self.newUser).then(function(data) {
         self.saveingNewUser = false;
-        self.newUser = self.defaultNewUser;
+        self.newUser = {};
         toastr.success("New user added!");
         self.reload();
+      }, function(resp) {
+        toastr.clear();
+        toastr.error("Failed to create user " + self.newUser.email + "!");
       });
     };
 
@@ -90,6 +90,25 @@ angular.module('calories')
       }, function(isConfirm) {
         if (isConfirm)
           _removeUser(profile);
+      });
+    };
+
+    self.showChangePwd = function() {
+      self.changePwd = {};
+      self.isShowChangePwd = true;
+      $timeout(function() {
+        angular.element('#old-password').focus();
+      }, 0);
+    }
+
+    self.saveChangePwd = function() {
+      $auth.updatePassword({
+        new_password1: self.changePwd.newPassword,
+        new_password2: self.changePwd.newPassword,
+        old_password: self.changePwd.oldPassword
+      }).then(function(resp) {
+        self.isShowChangePwd = false;
+        // $rootScope.user = resp.data.user;
       });
     };
 

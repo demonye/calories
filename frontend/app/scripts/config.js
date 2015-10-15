@@ -16,7 +16,10 @@ angular.module('calories')
   $authProvider.configure({
     apiUrl: ApiEndpoint.url,
     emailSignInPath: '/auth/login/',
-    signOutUrl: '/auth/logout/'
+    signOutUrl: '/auth/logout/',
+    emailRegistrationPath: '/auth/registration/',
+    passwordResetPath: '/auth/password/reset/',
+    passwordUpdatePath: '/auth/password/change/',
   });
   RestangularProvider.setBaseUrl(ApiEndpoint.url);
   /*
@@ -93,7 +96,7 @@ angular.module('calories')
     });
 })
 
-.run(function($rootScope, $state, editableOptions) {
+.run(function($rootScope, $state, $auth, editableOptions) {
   editableOptions.theme = 'bs3';
   toastr.options = {
     "closeButton": true
@@ -101,6 +104,7 @@ angular.module('calories')
 
   $rootScope.$on('auth:login-success', function(ev, resp) {
     $rootScope.user = resp;
+    console.log($auth);
     $state.go('index.main');
   });
 

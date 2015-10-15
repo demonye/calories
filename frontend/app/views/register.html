@@ -12,17 +12,11 @@
   <input type="email" class="form-control" ng-model="register.registerForm.email" placeholder="Email">
 </div>
 
-<div class="input-group">
-  <span class="input-group-addon">
-    <i class="fa fa-lock fa-fw"></i>
-  </span>
-  <input type="password" class="form-control" ng-model="register.registerForm.password" placeholder="Password">
-</div>
-
+<one-password-input password-var="register.registerForm.password" placeholder="Password" icon="fa-lock"></one-password-input>
 
 <div style="margin-top:10px" class="form-group">
   <div class="col-sm-12 controls">
-    <a class="btn btn-success btn-lg btn-block" ng-click="register.submitLoginForm()">Register </a>
+    <a class="btn btn-success btn-lg btn-block" ng-click="register.submitRegisterForm()">Register</a>
   </div>
 </div>
 

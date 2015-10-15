@@ -2,13 +2,14 @@ from django.shortcuts import render
 from users.models import MyUser
 from django.contrib.auth import get_user_model
 from django.db.models import Q
+from django.contrib.auth import authenticate, login
 from rest_framework import serializers, viewsets, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.authtoken.models import Token
 from users.permissions import IsOwnerOrAdminOrLowerLevel as IsPermitted
 from meals.models import Meal
-from rest_auth.views import LoginView
+from rest_auth.views import LoginView, PasswordChangeView, PasswordResetView
 import time
 
 
@@ -34,8 +35,8 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = get_user_model()
         fields = (
-            'id', 'email', 'display_name', 'is_admin', 'cal_per_day', 'gender', 'age',
-            'perm_level', 'is_active', 'url'
+            'id', 'email', 'display_name', 'password', 'is_admin', 'is_deleted',
+            'cal_per_day', 'gender', 'age', 'perm_level', 'url'
         )
         extra_kwargs = {
             'is_deleted': {'write_only': True},
@@ -62,7 +63,7 @@ class UserViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         user = self.request.user
-        if self.request.user.is_admin:
+        if user.is_admin:
             return MyUser.objects.filter(is_deleted=False)
         return MyUser.objects.filter(Q(id=user.id) | Q(perm_level__lt=user.perm_level))
 
@@ -74,16 +75,34 @@ class MyLoginSerializer(serializers.ModelSerializer):
         fields = ('id', 'email', 'displayname', 'is_admin')
 
 
+def auth_headers(token, email):
+    return {
+        'access-token': token,
+        'uid': email,
+        'expiry': time.time() + 1209600,
+    }
+
+
 class MyLoginView(LoginView):
 
     def get_response(self):
         data = MyLoginSerializer(self.user).data
-        headers = {
-            'access-token': self.token.key,
-            'uid': data['email'],
-            'expiry': time.time() + 1209600,
-        }
-        return Response({'data': data}, status=status.HTTP_200_OK, headers=headers)
+        return Response(
+            {'data': data}, status=status.HTTP_200_OK,
+            headers=auth_headers(self.token.key, data['email'])
+        )
+
+
+class MyPasswordChangeView(PasswordChangeView):
+
+    def put(self, request, *args, **kwargs):
+        resp = super(MyPasswordChangeView, self).post(request, *args, **kwargs)
+        user = request.user
+        resp['access-token'] = user.auth_token.key
+        resp['uid'] = user.email
+        resp['expiry'] = time.time() + 1209600
+        import ipdb; ipdb.set_trace()  # XXX BREAKPOINT
+        return resp
 
 
 class ValidateTokenView(APIView):
@@ -92,16 +111,16 @@ class ValidateTokenView(APIView):
         email = request.META.get('HTTP_UID')
         token = request.META.get('HTTP_ACCESS_TOKEN')
         expiry = request.META.get('HTTP_EXPIRY')
+
         try:
             user = MyUser.objects.get(email=email)
-            token = Token.objects.get(user=user)
-            headers = {
-                'access-token': token.key,
-                'uid': email,
-                'expiry': time.time() + 1209600,
-            }
-            data = MyLoginSerializer(user).data
-            return Response({'data': data}, status=status.HTTP_200_OK, headers=headers)
+            auth_token = Token.objects.get(user_id=user.id)
+            if token == auth_token.key:
+                data = MyLoginSerializer(user).data
+                return Response(
+                    {'data': data}, status=status.HTTP_200_OK,
+                    headers=auth_headers(token, user.email)
+                )
         except:
             pass
 

@@ -46,7 +46,7 @@ angular.module('calories')
     self.registerForm = {};
 
     self.submitRegisterForm = function() {
-      console.log(self.registerForm);
+      $auth.submitRegistration(self.registerForm);
     };
     self.showLoginForm = function() {
       $state.go('auth.login');
