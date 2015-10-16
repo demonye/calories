@@ -75,10 +75,12 @@
               <div class="panel-body">
                 <form>
                   <div class="form-group">
-                    <input id="old-password" type="password" placeholder="Old Password" class="form-control" ng-model="prof.changePwd.oldPassword">
+                    <input id="old-password" type="password" placeholder="Old Password"
+                      class="form-control" ng-model="prof.changePwd.oldPassword">
                   </div>
                   <div class="form-group">
-                    <one-password-input place-holder="New Password" password-var="prof.changePwd.newPassword"></one-password-input>
+                    <one-password-input place-holder="New Password" password-var="prof.changePwd.newPassword"
+                      enter-action="prof.saveChangePwd()"></one-password-input>
                   </div>
                 </form>
               </div>
@@ -89,9 +91,6 @@
                 </div>
               </div>
             </div>
-          </div>
-          <div class="col-lg-12" ng-if="user.id != prof.editing.id">
-            <a class="btn btn-default btn-sm">Send Email</a> to reset password.
           </div>
         </div>
 

@@ -8,7 +8,7 @@
  * Controller of the calories
  */
 angular.module('calories')
-  .controller('ProfileCtrl', function($rootScope, $filter, $timeout, $auth, MyAuth, Restangular, SweetAlert) {
+  .controller('ProfileCtrl', function($rootScope, $filter, $timeout, djangoAuth, Restangular, SweetAlert) {
     var self = this,
         currUser = $rootScope.user;
     self.users = [];
@@ -102,15 +102,22 @@ angular.module('calories')
     }
 
     self.saveChangePwd = function() {
-      $auth.updatePassword({
+      if (self.changePwd.oldPassword == self.changePwd.newPassword) {
+        toastr.error('New password is the same as the old!');
+        return;
+      }
+
+      djangoAuth.changePassword({
+        email: $rootScope.user.email,
+        old_password: self.changePwd.oldPassword,
         new_password1: self.changePwd.newPassword,
-        new_password2: self.changePwd.newPassword,
-        old_password: self.changePwd.oldPassword
-      }).then(function(resp) {
-        self.isShowChangePwd = false;
-        // $rootScope.user = resp.data.user;
+        new_password2: self.changePwd.newPassword
       });
     };
+
+    $rootScope.$on('auth:password-change-success', function () {
+      self.isShowChangePwd = false;
+    });
 
     self.reload();
 

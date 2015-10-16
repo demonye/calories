@@ -2,24 +2,24 @@
   <span class="input-group-addon">
     <i class="fa fa-user fa-fw"></i>
   </span>
-  <input name="email" type="email" class="form-control" ng-model="login.loginForm.email" placeholder="Email" ng-keyup="$event.keyCode == 13 && login.submitLoginForm()" required>
+  <input name="email" type="email" class="form-control" ng-model="login.form.email" placeholder="Email" ng-keyup="$event.keyCode == 13 && login.submit()" required>
 </div>
 
 <div class="input-group">
   <span class="input-group-addon">
     <i class="fa fa-lock fa-fw"></i>
   </span>
-  <input name="password" type="password" class="form-control" ng-model="login.loginForm.password" placeholder="Password" ng-keyup="$event.keyCode == 13 && login.submitLoginForm()" required>
+  <input name="password" type="password" class="form-control" ng-model="login.form.password" placeholder="Password" ng-keyup="$event.keyCode == 13 && login.submit()" required>
 </div>
 
 <div class="pull-right forgot-password">
-  <a href="" ng-click="login.showResetPasswordForm()">Forgot password?</a>
+  <a ui-sref="auth.reset-password">Forgot password?</a>
 </div>
 
 <div class="input-group">
   <div class="checkbox">
     <label>
-      <input type="checkbox" ng-model="login.loginForm.remember"> Remember me
+      <input type="checkbox" ng-model="login.form.remember"> Remember me
     </label>
   </div>
 </div>
@@ -27,7 +27,7 @@
 
 <div style="margin-top:10px" class="form-group">
   <div class="col-sm-12 controls">
-    <a class="btn btn-success btn-lg btn-block" ng-click="login.submitLoginForm()">Login </a>
+    <a class="btn btn-success btn-lg btn-block" ng-click="login.submit()">Login </a>
   </div>
 </div>
 
@@ -36,7 +36,7 @@
   <div class="col-md-12 control">
     <div style="border-top: 1px solid#888; padding-top:15px; font-size:85%" >
       Don't have an account!
-      <a href="" ng-click="login.showRegisterForm()"> Register Here </a>
+      <a ui-sref="auth.register"> Register Here </a>
     </div>
   </div>
 </div>

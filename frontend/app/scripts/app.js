@@ -12,7 +12,6 @@ angular
   .module('calories', [
     'ngCookies',
     'ngSanitize',
-    'ng-token-auth',
     'ui.router',
     'restangular',
     'infinite-scroll',

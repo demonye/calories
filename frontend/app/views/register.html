@@ -2,21 +2,21 @@
   <span class="input-group-addon">
     <i class="fa fa-user fa-fw"></i>
   </span>
-  <input type="text" class="form-control" ng-model="register.registerForm.username" placeholder="Username">
+  <input type="text" class="form-control" ng-model="register.form.username" placeholder="Username">
 </div>
 
 <div class="input-group">
   <span class="input-group-addon">
     <i class="fa fa-envelope fa-fw"></i>
   </span>
-  <input type="email" class="form-control" ng-model="register.registerForm.email" placeholder="Email">
+  <input type="email" class="form-control" ng-model="register.form.email" placeholder="Email">
 </div>
 
-<one-password-input password-var="register.registerForm.password" placeholder="Password" icon="fa-lock"></one-password-input>
+<one-password-input password-var="register.form.password" place-holder="Password" icon="fa-lock"></one-password-input>
 
 <div style="margin-top:10px" class="form-group">
   <div class="col-sm-12 controls">
-    <a class="btn btn-success btn-lg btn-block" ng-click="register.submitRegisterForm()">Register</a>
+    <a class="btn btn-success btn-lg btn-block" ng-click="register.submit()">Register</a>
   </div>
 </div>
 
@@ -25,7 +25,7 @@
   <div class="col-md-12 control">
     <div style="border-top: 1px solid#888; padding-top:15px; font-size:85%" >
       Have an account!
-      <a href="" ng-click="register.showLoginForm()"> Login Here </a>
+      <a ui-sref="auth.login"> Login Here </a>
     </div>
   </div>
 </div>

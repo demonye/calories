@@ -8,20 +8,13 @@ angular.module('calories')
 })
 
 .config(function($stateProvider, $urlMatcherFactoryProvider, ApiEndpoint,
-      $urlRouterProvider, $httpProvider, RestangularProvider, $authProvider) {
+      $urlRouterProvider, $httpProvider, RestangularProvider) {
 
   // $httpProvider.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
   $httpProvider.defaults.xsrfCookieName = 'csrftoken';
   $httpProvider.defaults.xsrfHeaderName = 'X-CSRFToken';
-  $authProvider.configure({
-    apiUrl: ApiEndpoint.url,
-    emailSignInPath: '/auth/login/',
-    signOutUrl: '/auth/logout/',
-    emailRegistrationPath: '/auth/registration/',
-    passwordResetPath: '/auth/password/reset/',
-    passwordUpdatePath: '/auth/password/change/',
-  });
   RestangularProvider.setBaseUrl(ApiEndpoint.url);
+
   /*
   RestangularProvider.setRequestSuffix('.json');
   */
@@ -40,6 +33,7 @@ angular.module('calories')
   $urlMatcherFactoryProvider.strictMode(false);
   $urlRouterProvider.otherwise("/index/404");
   $urlRouterProvider.when('', '/index/main');
+  $urlRouterProvider.when('/reset', '/auth/reset-confirm');
 
   $stateProvider
     .state('auth', {
@@ -68,15 +62,21 @@ angular.module('calories')
       templateUrl: 'views/reset-password.html',
       controller: 'ResetPasswordCtrl as reset'
     })
+    .state('auth.reset-confirm', {
+      url: "/reset-confirm/{uid}/{token}",
+      templateUrl: 'views/reset-confirm.html',
+      controller: 'ConfirmResetCtrl as confirm'
+    })
     .state('index', {
       abstract: true,
       url: "/index",
       templateUrl: "views/common.html",
       resolve: {
-        auth: function($auth, $state) {
-          return $auth.validateUser().catch(function(ev, reason) {
-            $state.go('auth.login');
-          });
+        auth: function(djangoAuth, $state) {
+          return djangoAuth.profile().then(angular.noop,
+              function(resp, status) {
+                $state.go('auth.login');
+              });
         }
       }
     })
@@ -96,95 +96,110 @@ angular.module('calories')
     });
 })
 
-.run(function($rootScope, $state, $auth, editableOptions) {
+.run(function($rootScope, $state, $cookies, $http, djangoAuth, ApiEndpoint, editableOptions) {
+  djangoAuth.initialize(ApiEndpoint.url + '/auth', false);
   editableOptions.theme = 'bs3';
   toastr.options = {
     "closeButton": true
   };
+  if ($cookies.token) {
+    $http.defaults.headers.common.Authorization = 'Token ' + $cookies.token;
+  }
 
   $rootScope.$on('auth:login-success', function(ev, resp) {
-    $rootScope.user = resp;
-    console.log($auth);
     $state.go('index.main');
+  });
+
+  $rootScope.$on('auth:login-error', function(ev, resp) {
+    toastr.clear();
+    toastr.error('Login failed: ' + resp.non_field_errors);
   });
 
   $rootScope.$on('auth:validation-success', function(ev, resp) {
     $rootScope.user = resp;
   });
 
-  $rootScope.$on('auth:login-error', function(ev, reason) {
-    toastr.error('Login failed: ' + reason.errors);
-  });
-
-  $rootScope.$on('auth:logout-success', function(ev) {
+  $rootScope.$on('auth:validation-error', function(ev, resp) {
+    console.log(ev);
     $state.go('auth.login');
   });
 
-  $rootScope.$on('auth:logout-error', function(ev, reason) {
-    toastr.error('Logout failed: ' + reason.errors);
+  $rootScope.$on('auth:logout-success', function() {
+    $state.go('auth.login');
+  });
+
+  $rootScope.$on('auth:logout-error', function(ev, resp) {
+    toastr.clear();
+    toastr.error('Logout failed: ' + resp.non_field_errors);
   });
 
   $rootScope.$on('auth:registration-email-success', function (ev, message) {
+    toastr.clear();
     toastr.success("A registration email was sent to " + message.email);
   });
 
-  $rootScope.$on('auth:registration-email-error', function (ev, reason) {
-    toastr.error("Registration failed: " + reason.errors);
+  $rootScope.$on('auth:registration-email-error', function (ev, resp) {
+    toastr.clear();
+    toastr.error("Registration failed: " + resp.non_field_errors);
   });
 
   $rootScope.$on('auth:email-confirmation-success', function (ev, user) {
+    toastr.clear();
     toastr.success("Welcome, " + user.email + ". Your account has been verified.");
     $rootScope.user = user;
     $state.go('index.main');
   });
 
-  $rootScope.$on('auth:email-confirmation-error', function (ev, reason) {
-    toastr.error("Registration failed: " + reason.errors);
+  $rootScope.$on('auth:email-confirmation-error', function (ev, resp) {
+    toastr.clear();
     toastr.error("There was an error with your registration.");
   });
 
   $rootScope.$on('auth:password-reset-request-success', function (ev, data) {
+    console.log(data);
+    toastr.clear();
     toastr.success("Password reset instructions were sent to " + data.email);
   });
 
-  $rootScope.$on('auth:password-reset-request-error', function (ev, reason) {
-    toastr.error("Password reset request failed: " + reason.errors[0]);
+  $rootScope.$on('auth:password-reset-request-error', function (ev, resp) {
+    toastr.clear();
+    toastr.error("Password reset request failed: " + resp.non_field_errors);
   });
 
   $rootScope.$on('auth:password-reset-confirm-success', function () {
+    toastr.clear();
     toastr.success("Your password reset has been confirmed!");
-    $state.go('auth.reset-password');
+    $state.go('auth.login');
   });
 
-  $rootScope.$on('auth:password-reset-confirm-error', function (ev, reason) {
+  $rootScope.$on('auth:password-reset-confirm-error', function (ev, resp) {
+    toastr.clear();
     toastr.error("Unable to verify your account. Please try again.");
   });
 
   $rootScope.$on('auth:password-change-success', function (ev) {
+    toastr.clear();
     toastr.success("Your password has been successfully updated!");
   });
 
-  $rootScope.$on('auth:password-change-error', function (ev, reason) {
-    toastr.error("Password change failed: " + reason.errors.full_messages);
+  $rootScope.$on('auth:password-change-error', function (ev, resp) {
+    toastr.clear();
+    var err = resp.old_password;
+    toastr.error("Password change failed: " + err);
   });
 
   $rootScope.$on('auth:account-update-success', function (ev) {
+    toastr.clear();
     toastr.success("Your account has been successfully updated!");
   });
 
-  $rootScope.$on('auth:account-update-error', function (ev, reason) {
-    toastr.error("Account update failed: " + reason.errors.full_messages);
-  });
-
-  $rootScope.$on('auth:account-destroy-success', function (ev) {
-    toastr.success("Your account has been successfully destroyed!");
-  });
-
-  $rootScope.$on('auth:account-destroy-error', function (ev, reason) {
-    toastr.error("Account deletion failed: " + reason.errors.full_messages);
+  $rootScope.$on('auth:account-update-error', function (ev, resp) {
+    toastr.clear();
+    toastr.error("Account update failed: " + resp.non_field_errors);
   });
 
   $rootScope.$on('auth:session-expired', function (ev) {
+    toastr.clear();
     toastr.warning('Session has expired');
   });
 })

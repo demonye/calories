@@ -8,6 +8,8 @@
  * Controller of the calories
  */
 angular.module('calories')
-  .controller('BaseCtrl', function (MyAuth) {
-    this.logout = MyAuth.signOut;
+  .controller('BaseCtrl', function (djangoAuth) {
+    this.logout = function() {
+      djangoAuth.logout();
+    };
   });

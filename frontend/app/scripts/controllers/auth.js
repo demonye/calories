@@ -13,65 +13,49 @@ angular.module('calories')
     $scope.authTitle = "";
   })
 
-  .controller('LoginCtrl', function($rootScope, $scope, $state, $auth, $cookies, ApiEndpoint) {
-    $scope.$parent.authTitle = "My Calories - Login";
+  .controller('LoginCtrl', function($rootScope, $scope, $state, $cookies, djangoAuth, ApiEndpoint) {
+    $scope.$parent.authTitle = "Login";
     var self = this;
-    self.loginForm = $cookies.getObject('loginForm') || {};
+    self.form = $cookies.getObject('loginForm') || {};
 
-    self.submitLoginForm = function() {
-      /*
-      if (/^[-a-z0-9~!$%^&*_=+}{\'?]+(\.[-a-z0-9~!$%^&*_=+}{\'?]+)*@([a-z0-9_][-a-z0-9_]*(\.[-a-z0-9_]+)*\.(aero|arpa|biz|com|coop|edu|gov|info|int|mil|museum|name|net|org|pro|travel|mobi|[a-z][a-z])|([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}))(:[0-9]{1,5})?$/i.test(self.loginForm.username)) {
-        self.loginForm.email = self.loginForm.username;
-        delete self.loginForm.username;
-      }
-      */
-      if (self.loginForm.remember) {
-        $cookies.putObject('loginForm', self.loginForm);
+    self.submit = function() {
+      if (self.form.remember) {
+        $cookies.putObject('loginForm', self.form);
       } else {
         $cookies.remove('loginForm');
       }
-      $auth.submitLogin(self.loginForm);
-    };
-    self.showRegisterForm = function() {
-      $state.go('auth.register');
-    };
-    self.showResetPasswordForm = function() {
-      $state.go('auth.reset-password');
+      djangoAuth.login(self.form);
     };
   })
 
-  .controller('RegisterCtrl', function($scope, $state, $auth) {
-    $scope.$parent.authTitle = "My Calories - Register";
+  .controller('RegisterCtrl', function($scope, $state, djangoAuth) {
+    $scope.$parent.authTitle = "Register";
     var self = this;
-    self.registerForm = {};
+    self.form = {};
 
-    self.submitRegisterForm = function() {
-      $auth.submitRegistration(self.registerForm);
-    };
-    self.showLoginForm = function() {
-      $state.go('auth.login');
+    self.submit = function() {
+      djangoAuth.register(self.form);
     };
   })
 
-  .controller('ResetPasswordCtrl', function($scope, $state, $auth) {
-    $scope.$parent.authTitle = "My Calories - Reset Password";
+  .controller('ResetPasswordCtrl', function($scope, $state, djangoAuth) {
+    $scope.$parent.authTitle = "Reset Password";
     var self = this;
-    self.resetForm = {};
+    self.form = {};
 
-    self.sendResetEmail = function() {
-      console.log(self.resetForm);
-    };
-    self.showLoginForm = function() {
-      $state.go('auth.login');
+    self.submit = function() {
+      djangoAuth.resetPassword(self.form);
     };
   })
 
-  .controller('ChangePasswordCtrl', function($scope, $state, $auth) {
-    $scope.$parent.authTitle = "My Calories - Change Password";
+  .controller('ConfirmResetCtrl', function($scope, $state, djangoAuth) {
+    $scope.$parent.authTitle = "Input New Password";
     var self = this;
-    self.changeForm = {};
-    self.submitChangeForm = function() {
-      console.log(self.changeForm);
+    self.form = $state.params;
+
+    self.submit = function() {
+      self.form.new_password2 = self.form.new_password1;
+      djangoAuth.confirmReset(self.form);
     };
   })
   ;

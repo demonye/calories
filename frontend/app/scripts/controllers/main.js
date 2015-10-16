@@ -8,6 +8,6 @@
  * Controller of the calories
  */
 angular.module('calories')
-  .controller('MainCtrl', function ($auth) {
+  .controller('MainCtrl', function () {
     // this.auth = $auth.validateUser();
   });

@@ -11,12 +11,8 @@ from users.permissions import IsOwnerOrAdminOrLowerLevel as IsPermitted
 from meals.models import Meal
 from rest_auth.views import LoginView, PasswordChangeView, PasswordResetView
 import time
+from api.serializers import MealSerializer, UserSerializer, MyLoginSerializer
 
-
-class MealSerializer(serializers.HyperlinkedModelSerializer):
-    class Meta:
-        model = Meal
-        fields = ('id', 'user', 'when', 'what', 'calorie', 'comment')
 
 
 class MealViewSet(viewsets.ModelViewSet):
@@ -31,31 +27,6 @@ class MealViewSet(viewsets.ModelViewSet):
         return Meal.objects.filter(Q(user=user) | Q(user__profile__manager=user))
 
 
-class UserSerializer(serializers.HyperlinkedModelSerializer):
-    class Meta:
-        model = get_user_model()
-        fields = (
-            'id', 'email', 'display_name', 'password', 'is_admin', 'is_deleted',
-            'cal_per_day', 'gender', 'age', 'perm_level', 'url'
-        )
-        extra_kwargs = {
-            'is_deleted': {'write_only': True},
-            'password': {'write_only': True},
-        }
-
-    def create(self, validate_data):
-        password = validate_data.pop('password')
-        user = MyUser.objects.create(**validate_data)
-        user.set_password(password)
-        user.save()
-        return user
-
-    def update(self, user, validate_data):
-        password = validate_data.pop('password')
-        user.set_password(password)
-        return super(UserSerializer, self).update(user, validate_data)
-
-
 class UserViewSet(viewsets.ModelViewSet):
     queryset = MyUser.objects.none()
     serializer_class = UserSerializer
@@ -66,13 +37,6 @@ class UserViewSet(viewsets.ModelViewSet):
         if user.is_admin:
             return MyUser.objects.filter(is_deleted=False)
         return MyUser.objects.filter(Q(id=user.id) | Q(perm_level__lt=user.perm_level))
-
-
-class MyLoginSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = get_user_model()
-        fields = ('id', 'email', 'displayname', 'is_admin')
 
 
 def auth_headers(token, email):
