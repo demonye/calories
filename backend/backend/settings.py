@@ -67,7 +67,7 @@ ROOT_URLCONF = 'backend.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, "templates")],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -118,6 +118,12 @@ AUTH_USER_MODEL = 'users.MyUser'
 APPEND_SLASH = False
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_HOST = 'smtp.mandrillapp.com'
+EMAIL_PORT = '587'
+EMAIL_HOST_USER = 'hongqiang.ye@gmail.com'
+EMAIL_HOST_PASSWORD = '8IM5goN9lDKIS1hABxDQOw'
+EMAIL_USE_TLS = True
+
 
 REST_FRAMEWORK = {
     #'DEFAULT_AUTHENTICATION_CLASSES': (
