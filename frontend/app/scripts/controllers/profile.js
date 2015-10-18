@@ -55,11 +55,12 @@ angular.module('calories')
     };
 
     self.update = function(profile, field, value) {
-      profile[field] = value;
-      profile.put().then(function(data) {
+      var params = {};
+      params[field] = value;
+      profile.patch(params).then(function(data) {
         toastr.clear();
         toastr.success("User " + data.email + " updated");
-        self.reload();
+        // self.reload();
       }, function(resp) {
         toastr.clear();
         toastr.error("Failed to update user " + profile.email + "!");
@@ -67,8 +68,7 @@ angular.module('calories')
     };
 
     var _removeUser = function(user) {
-      user.is_deleted = true;
-      user.put().then(function(data) {
+      user.patch({is_deleted: true}).then(function(data) {
         toastr.clear();
         toastr.success("User " + user.email + " deleted!");
         self.reload();

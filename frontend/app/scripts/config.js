@@ -52,6 +52,11 @@ angular.module('calories')
       templateUrl: 'views/register.html',
       controller: 'RegisterCtrl as register'
     })
+    .state('auth.register-confirm', {
+      url: "/register-confirm/{key}",
+      templateUrl: 'views/register-confirm.html',
+      controller: 'ConfirmRegisterCtrl as confirm_reg'
+    })
     .state('auth.change-password', {
       url: "/change-password",
       templateUrl: 'views/change-password.html',
@@ -65,7 +70,7 @@ angular.module('calories')
     .state('auth.reset-confirm', {
       url: "/reset-confirm/{uid}/{token}",
       templateUrl: 'views/reset-confirm.html',
-      controller: 'ConfirmResetCtrl as confirm'
+      controller: 'ConfirmResetCtrl as confirm_reset'
     })
     .state('index', {
       abstract: true,
@@ -143,10 +148,9 @@ angular.module('calories')
     toastr.error("Registration failed: " + resp.non_field_errors);
   });
 
-  $rootScope.$on('auth:email-confirmation-success', function (ev, user) {
+  $rootScope.$on('auth:email-confirmation-success', function (ev, resp) {
     toastr.clear();
-    toastr.success("Welcome, " + user.email + ". Your account has been verified.");
-    $rootScope.user = user;
+    // toastr.success("Welcome, " + $rootScope.email + ". Your account has been verified.");
     $state.go('index.main');
   });
 

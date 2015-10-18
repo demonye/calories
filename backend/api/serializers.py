@@ -23,15 +23,10 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
 
     def create(self, validate_data):
         password = validate_data.pop('password')
-        user = model.objects.create(**validate_data)
+        user = MyUser.objects.create(**validate_data)
         user.set_password(password)
         user.save()
         return user
-
-    def update(self, user, validate_data):
-        password = validate_data.pop('password')
-        user.set_password(password)
-        return super(UserSerializer, self).update(user, validate_data)
 
 
 class MyLoginSerializer(serializers.ModelSerializer):

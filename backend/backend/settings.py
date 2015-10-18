@@ -37,7 +37,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    # 'django.contrib.sites',
+    'django.contrib.sites',
     'corsheaders',
     'rest_framework',
     'rest_framework.authtoken',
@@ -118,11 +118,12 @@ AUTH_USER_MODEL = 'users.MyUser'
 APPEND_SLASH = False
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-EMAIL_HOST = 'smtp.mandrillapp.com'
-EMAIL_PORT = '587'
-EMAIL_HOST_USER = 'hongqiang.ye@gmail.com'
-EMAIL_HOST_PASSWORD = '8IM5goN9lDKIS1hABxDQOw'
-EMAIL_USE_TLS = True
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_HOST = 'smtp.mandrillapp.com'
+# EMAIL_PORT = 587
+# EMAIL_HOST_USER = 'hongqiang.ye@gmail.com'
+# EMAIL_HOST_PASSWORD = '8IM5goN9lDKIS1hABxDQOw'
+# EMAIL_USE_TLS = True
 
 
 REST_FRAMEWORK = {
@@ -158,3 +159,5 @@ CORS_EXPOSE_HEADERS = (
     'expiry',
     'uid',
 )
+
+SITE_ID = 1

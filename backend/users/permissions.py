@@ -11,5 +11,5 @@ class IsOwnerOrAdminOrLowerLevel(permissions.BasePermission):
                user.is_available() and ( \
                  request.user.is_admin or \
                  user == request.user or \
-                 user.perm_level < request.user.perm_level
+                 0 < user.perm_level < request.user.perm_level
                )

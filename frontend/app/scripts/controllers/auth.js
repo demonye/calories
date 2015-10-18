@@ -34,8 +34,14 @@ angular.module('calories')
     self.form = {};
 
     self.submit = function() {
+      self.form.password2 = self.form.password1;
       djangoAuth.register(self.form);
     };
+  })
+
+  .controller('ConfirmRegisterCtrl', function($scope, $state, djangoAuth) {
+    self.form = $state.params;
+    djangoAuth.verify(self.form);
   })
 
   .controller('ResetPasswordCtrl', function($scope, $state, djangoAuth) {
