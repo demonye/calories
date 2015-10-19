@@ -7,8 +7,11 @@ from datetime import datetime
 
 class Meal(models.Model):
     user = models.ForeignKey(MyUser)
-    meal_date = models.DateField(default=timezone.now)
-    meal_time = models.TimeField(default=timezone.now)
+    meal_time = models.DateTimeField(default=timezone.now)
     what = models.CharField(max_length=256)
     calorie = models.IntegerField()
     comment = models.CharField(max_length=1024, blank=True, null=True)
+
+
+    class Meta:
+        ordering = ['-meal_time']

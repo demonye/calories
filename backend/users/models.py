@@ -42,7 +42,6 @@ class MyUser(AbstractBaseUser):
     age = models.SmallIntegerField(null=True, blank=True)
     perm_level = models.SmallIntegerField(default=1)    # 0 is admin; otherwise bigger is higher
     is_active = models.BooleanField(default=True)
-    is_deleted = models.BooleanField(default=False)
 
     objects = MyUserManager()
 
@@ -81,6 +80,3 @@ class MyUser(AbstractBaseUser):
     @property
     def displayname(self):
         return self.get_full_name()
-
-    def is_available(self):
-        return self.is_active and not self.is_deleted

@@ -8,7 +8,7 @@
     </div>
   </div>
 
-  <div class="col-md-8">
+  <div class="col-md-8" id="setting-detail">
     <uib-tabset>
       <uib-tab>
         <uib-tab-heading>
@@ -169,7 +169,7 @@
              ng-class="{'profile-active' : prof.editing.id == prof.profile.id}">
           <div class="row">
             <div class="col-xs-6 pointer text-info"
-              ng-click="prof.editing = prof.profile">{{ prof.profile.email }}</div>
+              ng-click="prof.showDetail(prof.profile)">{{ prof.profile.email }}</div>
             <div class="col-xs-4">{{ prof.profile.display_name }}</div>
             <div class="col-xs-2 text-center"> <span class="badge">Me</span> </div>
           </div>
@@ -179,7 +179,7 @@
              ng-class="{'profile-active' : prof.editing.id == u.id}">
           <div class="row">
             <div class="col-xs-6 pointer text-info"
-              ng-click="prof.editing = u">{{ u.email }}</div>
+              ng-click="prof.showDetail(u)">{{ u.email }}</div>
             <div class="col-xs-4">{{ u.display_name }}</div>
             <div class="col-xs-2 text-center">
               <div class="pointer" ng-click="prof.remove(u)">

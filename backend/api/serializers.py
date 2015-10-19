@@ -6,18 +6,17 @@ from rest_framework import serializers
 class MealSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Meal
-        fields = ('id', 'user', 'when', 'what', 'calorie', 'comment')
+        fields = ('id', 'user', 'meal_time', 'what', 'calorie', 'comment')
 
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = MyUser
         fields = (
-            'id', 'email', 'display_name', 'password', 'is_admin', 'is_deleted',
+            'id', 'email', 'display_name', 'password', 'is_admin',
             'cal_per_day', 'gender', 'age', 'perm_level', 'url'
         )
         extra_kwargs = {
-            'is_deleted': {'write_only': True},
             'password': {'write_only': True},
         }
 
@@ -33,4 +32,4 @@ class MyLoginSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = MyUser
-        fields = ('id', 'email', 'displayname', 'is_admin')
+        fields = ('id', 'email', 'displayname', 'is_admin', 'cal_per_day')

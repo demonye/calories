@@ -15,7 +15,7 @@ class MealViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         user = self.request.user
         if user.is_admin:
-            return Meal.objects.filter(is_deleted=False)
+            return Meal.objects.all()
         return Meal.objects.filter(Q(user_id=user.id) | \
             (Q(user__perm_level__gt=0) & Q(user__perm_level__lt=user.perm_level))
         )
@@ -29,7 +29,7 @@ class UserViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         user = self.request.user
         if user.is_admin:
-            return MyUser.objects.filter(is_deleted=False)
+            return MyUser.objects.all()
         return MyUser.objects.filter(Q(id=user.id) | \
             (Q(perm_level__gt=0) & Q(perm_level__lt=user.perm_level))
         )

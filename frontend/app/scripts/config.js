@@ -112,6 +112,7 @@ angular.module('calories')
   }
 
   $rootScope.$on('auth:login-success', function(ev, resp) {
+    toastr.clear();
     $state.go('index.main');
   });
 
@@ -145,13 +146,17 @@ angular.module('calories')
 
   $rootScope.$on('auth:registration-email-error', function (ev, resp) {
     toastr.clear();
-    toastr.error("Registration failed: " + resp.non_field_errors);
+    if (resp.email)
+      toastr.error("Registration failed: " + resp.email[0]);
+    else if (resp.non_field_errors)
+      toastr.error("Registration failed: " + resp.non_field_errors);
   });
 
   $rootScope.$on('auth:email-confirmation-success', function (ev, resp) {
-    toastr.clear();
-    // toastr.success("Welcome, " + $rootScope.email + ". Your account has been verified.");
     $state.go('index.main');
+    toastr.clear();
+    console.log($rootScope.user);
+    toastr.success("Welcome, your account has been verified.");
   });
 
   $rootScope.$on('auth:email-confirmation-error', function (ev, resp) {

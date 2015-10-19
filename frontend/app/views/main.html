@@ -1,23 +1,106 @@
+<!--
 <div class="jumbotron">
-  <h1>'Allo, 'Allo!</h1>
   <p class="lead">
-    <img src="images/calories.png" alt="I'm Yeoman"><br>
     Always a pleasure scaffolding your apps.
   </p>
-  <p><a class="btn btn-lg btn-success" ng-href="#/">Splendid!<span class="glyphicon glyphicon-ok"></span></a></p>
+</div>
+-->
+
+<div ng-hide="main.showFilter || main.dates.length <= 7">
+  <div class="text-left">
+    <a class="btn btn-success btn-sm" ng-click="main.showFilter = true">
+      Show Filter <i class="fa fa-filter"></i>
+    </a>
+  </div>
 </div>
 
-<div class="row marketing">
-  <h4>HTML5 Boilerplate</h4>
-  <p>
-    HTML5 Boilerplate is a professional front-end template for building fast, robust, and adaptable web apps or sites.
-  </p>
+<div ng-show="main.showFilter">
+  <div class="text-left">
+    <a class="btn btn-default btn-sm" ng-click="main.showFilter = false">
+      Hide Filter
+    </a>
+  </div>
+  <div class="panel panel-success">
+    <div class="panel-body">
+      <div class="row">
+        <div class="col-md-2 text-right" style="padding:5px">
+          <span class="text-muted">Date: </span>
+        </div>
+        <div class="col-md-5">
+          <p class="input-group input-group-sm">
+            <span class="input-group-addon">From</span>
+            <input type="text" class="form-control" uib-datepicker-popup ng-model="main.dt.from.value" show-button-bar="false" is-open="main.dt.from.opened" datepicker-options="main.dateOptions" ng-required="true">
+            <span class="input-group-btn">
+              <button class="btn btn-default" ng-click="main.dt.from.opened = true">
+                <i class="fa fa-calendar"></i>
+              </button>
+            </span>
+          </p>
+        </div>
+        <div class="col-md-5">
+          <p class="input-group input-group-sm">
+            <span class="input-group-addon">To</span>
+            <input type="text" class="form-control" uib-datepicker-popup ng-model="main.dt.to.value" show-button-bar="false" is-open="main.dt.to.opened" datepicker-options="main.dateOptions" ng-required="true">
+            <span class="input-group-btn">
+              <button class="btn btn-default" ng-click="main.dt.to.opened = true">
+                <i class="fa fa-calendar"></i>
+              </button>
+            </span>
+          </p>
+        </div>
+      </div>
 
-  <h4>Angular</h4>
-  <p>
-    AngularJS is a toolset for building the framework most suited to your application development.
-  </p>
+      <hr style="margin: 0">
 
-  <h4>Karma</h4>
-  <p>Spectacular Test Runner for JavaScript.</p>
+      <div class="row" style="padding-top:10px; padding-bottom:-10px;">
+        <div class="col-md-2 text-right" style="padding:5px">
+          <span class="text-muted">Time: </span>
+        </div>
+        <div class="col-md-5">
+          <p class="input-group input-group-sm">
+            <span class="input-group-addon">From</span>
+            <input type="text" class="form-control" uib-datepicker-popup ng-model="main.tm.from.value" show-button-bar="false" is-open="main.tm.from.opened" datepicker-options="main.dateOptions" ng-required="true">
+            <span class="input-group-btn">
+              <button class="btn btn-default" ng-click="main.tm.from.opened = true">
+                <i class="fa fa-calendar"></i>
+              </button>
+            </span>
+          </p>
+        </div>
+        <div class="col-md-5">
+          <p class="input-group input-group-sm">
+            <span class="input-group-addon">To</span>
+            <input type="text" class="form-control" uib-datepicker-popup ng-model="main.tm.to.value" show-button-bar="false" is-open="main.tm.to.opened" datepicker-options="main.dateOptions" ng-required="true">
+            <span class="input-group-btn">
+              <button class="btn btn-default" ng-click="main.tm.to.opened = true">
+                <i class="fa fa-calendar"></i>
+              </button>
+            </span>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div> 
+
+<div infinite-scroll="main.nextPage()"
+     infinite-scroll-disabled="main.loading">
+  <uib-accordion close-others="main.closeOthers">
+  <uib-accordion-group ng-repeat="d in main.dates" panel-class="panel-success" calorie-date="{{d}}">
+      <uib-accordion-heading>
+        {{ d }} <span class="pull-right"> Total: {{ main.sumDayCal(d) }} (cal)</span>
+      </uib-accordion-heading>
+      <div class="row" ng-repeat="m in main.meals[d]" ng-class-even="'li-even'">
+        <div class="col-md-3 m-t-xs m-b-xs text-right">
+          <i>{{ m.meal_time | date:'HH:mm' }}</i>
+        </div>
+        <div class="col-md-6 m-t-xs m-b-xs">
+          {{ m.what }}
+        </div>
+        <div class="col-md-3 m-t-xs m-b-xs">
+          {{ m.calorie }}
+        </div>
+      </div>
+    </uib-accordion-group>
+  </uib-accordion>
 </div>

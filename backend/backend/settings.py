@@ -44,6 +44,7 @@ INSTALLED_APPS = (
     'rest_auth',
     'allauth',
     'allauth.account',
+    'allauth.socialaccount',
     'rest_auth.registration',
     'meals',
     'users',
@@ -117,13 +118,9 @@ AUTH_USER_MODEL = 'users.MyUser'
 
 APPEND_SLASH = False
 
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-# EMAIL_HOST = 'smtp.mandrillapp.com'
-# EMAIL_PORT = 587
-# EMAIL_HOST_USER = 'hongqiang.ye@gmail.com'
-# EMAIL_HOST_PASSWORD = '8IM5goN9lDKIS1hABxDQOw'
-# EMAIL_USE_TLS = True
+# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_HOST = 'localhost'
+EMAIL_PORT = 1025
 
 
 REST_FRAMEWORK = {
@@ -131,7 +128,7 @@ REST_FRAMEWORK = {
     #    'rest_framework.authentication.SessionAuthentication',
     #    'rest_framework.authentication.BaseAuthentication',
     #),
-    #'PAGE_SIZE': 10,
+    'PAGE_SIZE': 7,
 }
 
 REST_AUTH_SERIALIZERS = {

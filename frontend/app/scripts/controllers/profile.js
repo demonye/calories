@@ -8,7 +8,8 @@
  * Controller of the calories
  */
 angular.module('calories')
-  .controller('ProfileCtrl', function($rootScope, $filter, $timeout, djangoAuth, Restangular, SweetAlert) {
+  .controller('ProfileCtrl', function($rootScope, $filter, $timeout, $location,
+        djangoAuth, Restangular, SweetAlert) {
     var self = this,
         currUser = $rootScope.user;
     self.users = [];
@@ -60,7 +61,9 @@ angular.module('calories')
       profile.patch(params).then(function(data) {
         toastr.clear();
         toastr.success("User " + data.email + " updated");
-        // self.reload();
+        if (profile.id == currUser.id && field == 'display_name') {
+          currUser.displayname = data.display_name || data.email;
+        }
       }, function(resp) {
         toastr.clear();
         toastr.error("Failed to update user " + profile.email + "!");
@@ -68,7 +71,7 @@ angular.module('calories')
     };
 
     var _removeUser = function(user) {
-      user.patch({is_deleted: true}).then(function(data) {
+      user.remove().then(function(data) {
         toastr.clear();
         toastr.success("User " + user.email + " deleted!");
         self.reload();
@@ -91,6 +94,12 @@ angular.module('calories')
         if (isConfirm)
           _removeUser(profile);
       });
+    };
+
+    self.showDetail = function(profile) {
+      var scrollTo = angular.element('#setting-detail').offset().top - 60;
+      angular.element('html,body').animate({scrollTop: scrollTo});
+      self.editing = profile;
     };
 
     self.showChangePwd = function() {
