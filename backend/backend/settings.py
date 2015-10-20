@@ -38,7 +38,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.sites',
-    'corsheaders',
+    'django_filters',
     'rest_framework',
     'rest_framework.authtoken',
     'rest_auth',
@@ -128,6 +128,7 @@ REST_FRAMEWORK = {
     #    'rest_framework.authentication.SessionAuthentication',
     #    'rest_framework.authentication.BaseAuthentication',
     #),
+    'DEFAULT_FILTER_BACKENDS': ('rest_framework.filters.DjangoFilterBackend',),
     'PAGE_SIZE': 7,
 }
 
@@ -145,16 +146,5 @@ ACCOUNT_USER_MODEL_USERNAME_FIELD = None
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_USERNAME_REQUIRED = False
 ACCOUNT_AUTHENTICATION_METHOD = 'email'
-
-# CORS_ORIGIN_ALLOW_ALL = True
-CORS_ALLOW_CREDENTIALS = True
-
-CORS_EXPOSE_HEADERS = (
-    'access-token',
-    'token-type',
-    'client',
-    'expiry',
-    'uid',
-)
 
 SITE_ID = 1

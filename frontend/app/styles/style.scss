@@ -44,6 +44,12 @@
   }
 }
 
+[date-picker] {
+  border: 1px solid rgba(0,0,0,0.2);
+  border-radius: 6px;
+  box-shadow: 0 5px 10px rgba(0,0,0,0.2);
+}
+
 .profile-left {
   // border-right: 1px solid #e0e0e0;
   margin-bottom: 20px;
@@ -69,6 +75,10 @@
 
 .pointer {
   cursor: pointer;
+}
+
+.border-bottom {
+  border-bottom: 1px solid #e0e0e0;
 }
 
 .m {
@@ -110,6 +120,12 @@
 .m-b {
   margin-bottom: 15px;
 }
+.m-l {
+  margin-left: 15px;
+}
+.m-r {
+  margin-right: 15px;
+}
 .p-0 {
   padding: 0;
 }
@@ -122,4 +138,10 @@
 
 .li-even {
   background-color: #f0f0f0;
+}
+
+.form-filter .form-group .input-group .input-group-addon {
+  min-width: 50px;
+  max-width: 50px;
+  width: 50px;
 }

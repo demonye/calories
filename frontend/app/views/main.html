@@ -1,106 +1,93 @@
-<!--
-<div class="jumbotron">
-  <p class="lead">
-    Always a pleasure scaffolding your apps.
-  </p>
-</div>
--->
-
-<div ng-hide="main.showFilter || main.dates.length <= 7">
-  <div class="text-left">
-    <a class="btn btn-success btn-sm" ng-click="main.showFilter = true">
-      Show Filter <i class="fa fa-filter"></i>
-    </a>
-  </div>
-</div>
-
-<div ng-show="main.showFilter">
-  <div class="text-left">
-    <a class="btn btn-default btn-sm" ng-click="main.showFilter = false">
-      Hide Filter
-    </a>
-  </div>
-  <div class="panel panel-success">
-    <div class="panel-body">
-      <div class="row">
-        <div class="col-md-2 text-right" style="padding:5px">
-          <span class="text-muted">Date: </span>
-        </div>
-        <div class="col-md-5">
-          <p class="input-group input-group-sm">
-            <span class="input-group-addon">From</span>
-            <input type="text" class="form-control" uib-datepicker-popup ng-model="main.dt.from.value" show-button-bar="false" is-open="main.dt.from.opened" datepicker-options="main.dateOptions" ng-required="true">
-            <span class="input-group-btn">
-              <button class="btn btn-default" ng-click="main.dt.from.opened = true">
-                <i class="fa fa-calendar"></i>
-              </button>
-            </span>
-          </p>
-        </div>
-        <div class="col-md-5">
-          <p class="input-group input-group-sm">
-            <span class="input-group-addon">To</span>
-            <input type="text" class="form-control" uib-datepicker-popup ng-model="main.dt.to.value" show-button-bar="false" is-open="main.dt.to.opened" datepicker-options="main.dateOptions" ng-required="true">
-            <span class="input-group-btn">
-              <button class="btn btn-default" ng-click="main.dt.to.opened = true">
-                <i class="fa fa-calendar"></i>
-              </button>
-            </span>
-          </p>
-        </div>
+<div class="row m-b">
+  <div class="col-md-4 m-b">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h4 class="panel-title"><i class="fa fa-filter"></i> Filter</h4>
       </div>
-
-      <hr style="margin: 0">
-
-      <div class="row" style="padding-top:10px; padding-bottom:-10px;">
-        <div class="col-md-2 text-right" style="padding:5px">
-          <span class="text-muted">Time: </span>
-        </div>
-        <div class="col-md-5">
-          <p class="input-group input-group-sm">
-            <span class="input-group-addon">From</span>
-            <input type="text" class="form-control" uib-datepicker-popup ng-model="main.tm.from.value" show-button-bar="false" is-open="main.tm.from.opened" datepicker-options="main.dateOptions" ng-required="true">
-            <span class="input-group-btn">
-              <button class="btn btn-default" ng-click="main.tm.from.opened = true">
-                <i class="fa fa-calendar"></i>
-              </button>
-            </span>
-          </p>
-        </div>
-        <div class="col-md-5">
-          <p class="input-group input-group-sm">
-            <span class="input-group-addon">To</span>
-            <input type="text" class="form-control" uib-datepicker-popup ng-model="main.tm.to.value" show-button-bar="false" is-open="main.tm.to.opened" datepicker-options="main.dateOptions" ng-required="true">
-            <span class="input-group-btn">
-              <button class="btn btn-default" ng-click="main.tm.to.opened = true">
-                <i class="fa fa-calendar"></i>
-              </button>
-            </span>
-          </p>
+      <div class="panel-body">
+        <form class="form-inline form-filter">
+          <div class="form-group">
+            <label style="min-width: 55px;">Date: </label>
+            <div class="input-group input-group-sm">
+              <span class="input-group-addon">From</span>
+              <input type="datetime" class="form-control" date-time ng-model="main.filter.from_date"
+                view="date" min-view="date" auto-close="true" format="yyyy-MM-dd">
+            </div>
+            <div class="input-group input-group-sm">
+              <span class="input-group-addon">To</span>
+              <input type="datetime" class="form-control" date-time ng-model="main.filter.to_date"
+                view="date" min-view="date" auto-close="true" format="yyyy-MM-dd">
+            </div>
+          </div>
+          <div class="form-group">
+            <label style="min-width: 55px;">Time: </label>
+            <div class="input-group input-group-sm">
+              <span class="input-group-addon">From</span>
+              <input class="form-control" ui-timepicker ng-model="main.filter.from_time">
+            </div>
+            <div class="input-group input-group-sm">
+              <span class="input-group-addon">To</span>
+              <input class="form-control" ui-timepicker ng-model="main.filter.to_time">
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="panel-footer">
+        <div class="btn-group btn-group-sm" role="group">
+          <a class="btn btn-success" ng-click="main.applyFilter()"><i class="fa fa-check"></i> Apply</a>
+          <a class="btn btn-default" ng-click="main.clearFilter()"><i class="fa fa-ban"></i> Clear</a>
         </div>
       </div>
     </div>
   </div>
-</div> 
 
-<div infinite-scroll="main.nextPage()"
-     infinite-scroll-disabled="main.loading">
-  <uib-accordion close-others="main.closeOthers">
-  <uib-accordion-group ng-repeat="d in main.dates" panel-class="panel-success" calorie-date="{{d}}">
-      <uib-accordion-heading>
-        {{ d }} <span class="pull-right"> Total: {{ main.sumDayCal(d) }} (cal)</span>
-      </uib-accordion-heading>
-      <div class="row" ng-repeat="m in main.meals[d]" ng-class-even="'li-even'">
-        <div class="col-md-3 m-t-xs m-b-xs text-right">
-          <i>{{ m.meal_time | date:'HH:mm' }}</i>
+  <div class="col-md-8">
+    <uib-tabset>
+      <uib-tab>
+        <uib-tab-heading>
+          <i class="fa fa-list"></i> Meal List
+        </uib-tab-heading>
+        <div class="m-t" infinite-scroll="main.loadMore()"
+            infinite-scroll-disabled="main.noMore || main.loading">
+
+          <uib-accordion close-others="false">
+            <uib-accordion-group ng-repeat="d in main.dates" panel-class="panel-success" calorie-date="{{d}}">
+              <uib-accordion-heading>
+                {{ d|date:'MMM dd, yyyy' }}
+                <span class="pull-right"> Total: {{ main.sumDateCal(d) }} (cal)</span>
+              </uib-accordion-heading>
+              <div class="row" ng-repeat="m in main.meals[d]" ng-class-even="'li-even'">
+                <div class="col-md-2 m-t-xs m-b-xs text-right">
+                  <i>{{ m.meal_time_str }}</i>
+                </div>
+                <div class="col-md-5 m-t-xs m-b-xs">
+                  {{ m.what }}
+                </div>
+                <div class="col-md-3 m-t-xs m-b-xs">
+                  {{ m.calorie }}
+                </div>
+                <div class="col-md-2 m-t-xs m-b-xs text-info text-right">
+                  <span class="pointer"><i class="fa fa-pencil-square-o fa-fw"></i></span>
+                  <span class="pointer" ><i class="fa fa-trash-o fa-fw"></i></span>
+                </div>
+              </div>
+            </uib-accordion-group>
+          </uib-accordion>
         </div>
-        <div class="col-md-6 m-t-xs m-b-xs">
-          {{ m.what }}
-        </div>
-        <div class="col-md-3 m-t-xs m-b-xs">
-          {{ m.calorie }}
-        </div>
-      </div>
-    </uib-accordion-group>
-  </uib-accordion>
+      </uib-tab>
+      <uib-tab>
+        <uib-tab-heading>
+          <i class="fa fa-plus"></i> New Meal
+        </uib-tab-heading>
+      </uib-tab>
+    </uib-tabset>
+    <!--
+    <div>
+      <a class="btn btn-default btn-sm btn-block">
+        More <i class="fa fa-angle-double-down"></i>
+      </a>
+    </div>
+    -->
+  </div>
+
 </div>

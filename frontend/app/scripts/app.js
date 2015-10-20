@@ -17,5 +17,7 @@ angular
     'infinite-scroll',
     'xeditable',
     'ui.bootstrap',
+    'ui.timepicker',
+    'datePicker',
     'oitozero.ngSweetAlert'
   ]);
