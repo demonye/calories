@@ -1,25 +1,14 @@
-.header {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 1000;
-}
+/**
+ * Stylesheet for Calories project
+ * (c) 2015 Eric Ye
+ * License: MIT
+ */
 
-.main {
-  margin-top: 82px;
-}
+@import "variables";
+@import "base";
+@import "profile";
+@import "meal";
 
-/*
-.footer {
-  background-color: #e7e7e7;
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  z-index: 1000;
-}
-*/
 
 .auth-container {
   .panel-body {
@@ -37,111 +26,8 @@
   }
 }
 
-.navbar-brand {
-  .logo {
-    width: 30px;
-    margin-top: -5px;
-  }
-}
-
 [date-picker] {
-  border: 1px solid rgba(0,0,0,0.2);
+  border: $border-style;
   border-radius: 6px;
-  box-shadow: 0 5px 10px rgba(0,0,0,0.2);
-}
-
-.profile-left {
-  // border-right: 1px solid #e0e0e0;
-  margin-bottom: 20px;
-  .profile-avatar {
-    width: 100%;
-    margin-left: 20px;
-    img {
-      width: 120px;
-      border-radius: 50%;
-    }
-  }
-  .profile-email {
-    margin: 20px 0 20px 20px;
-  }
-}
-
-.profile-list {
-  padding: 0;
-  .list-group-item.profile-active {
-    border-left: 3px solid #4cae4c;
-  }
-}
-
-.pointer {
-  cursor: pointer;
-}
-
-.border-bottom {
-  border-bottom: 1px solid #e0e0e0;
-}
-
-.m {
-  margin: 15px;
-}
-.m-sm {
-  margin: 10px;
-}
-.m-xs {
-  margin: 5px;
-}
-.m-t-xs {
-  margin-top: 5px;
-}
-.m-b-xs {
-  margin-bottom: 5px;
-}
-.m-l-xs {
-  margin-left: 5px;
-}
-.m-r-xs {
-  margin-right: 5px;
-}
-.m-t-sm {
-  margin-top: 10px;
-}
-.m-b-sm {
-  margin-bottom: 10px;
-}
-.m-l-sm {
-  margin-left: 10px;
-}
-.m-r-sm {
-  margin-right: 10px;
-}
-.m-t {
-  margin-top: 15px;
-}
-.m-b {
-  margin-bottom: 15px;
-}
-.m-l {
-  margin-left: 15px;
-}
-.m-r {
-  margin-right: 15px;
-}
-.p-0 {
-  padding: 0;
-}
-.p-t-0 {
-  padding-top: 0;
-}
-.p-b-0 {
-  padding-bottom: 0;
-}
-
-.li-even {
-  background-color: #f0f0f0;
-}
-
-.form-filter .form-group .input-group .input-group-addon {
-  min-width: 50px;
-  max-width: 50px;
-  width: 50px;
+  box-shadow: $border-shadow;
 }

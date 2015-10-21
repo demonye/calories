@@ -1,0 +1,51 @@
+@mixin meal-li($color) {
+  background-color: $color;
+  &:hover {
+    background-color: darken($color, 3%);
+  }
+}
+
+.meal-filter {
+  .form-group  {
+    label {
+      min-width: 55px;
+    }
+    .input-group {
+      .input-group-addon {
+        min-width: 50px;
+        max-width: 50px;
+        width: 50px;
+      }
+    }
+  }
+}
+
+.meal-item {
+  cursor: pointer;
+  &.meal-item-odd { @include meal-li($odd-color); };
+  &.meal-item-even { @include meal-li($even-color); };
+  .meal-item-delete {
+    &:hover {
+      font-size: 1.05em;
+      color: #a94442;
+    }
+  }
+}
+
+.meal-item-form {
+  .form-group {
+    .input-group {
+      .input-group-addon {
+        min-width: 60px;
+        max-width: 60px;
+        width: 60px;
+      }
+    }
+  }
+}
+
+.meal-list {
+  .panel {
+    margin-bottom: 5px;
+  }
+}

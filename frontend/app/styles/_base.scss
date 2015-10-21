@@ -1,0 +1,104 @@
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+}
+
+.main {
+  margin-top: $body-margin-top;
+}
+
+/*
+.footer {
+  background-color: #e7e7e7;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+}
+*/
+
+.navbar-brand {
+  .logo {
+    width: $logo-width;
+    margin-top: -5px;
+  }
+}
+
+.pointer {
+  cursor: pointer;
+}
+
+.border-bottom {
+  border-bottom: $border-style;
+}
+
+.border-top {
+  border-top: $border-style;
+}
+
+.border-left {
+  border-left: $border-style;
+}
+
+.border-right {
+  border-right: $border-style;
+}
+
+.m {
+  margin: $margin-m;
+}
+.m-sm {
+  margin: $margin-sm;
+}
+.m-xs {
+  margin: $margin-xs;
+}
+.m-t-xs {
+  margin-top: $margin-xs;
+}
+.m-b-xs {
+  margin-bottom: $margin-xs;
+}
+.m-l-xs {
+  margin-left: $margin-xs;
+}
+.m-r-xs {
+  margin-right: $margin-xs;
+}
+.m-t-sm {
+  margin-top: $margin-sm;
+}
+.m-b-sm {
+  margin-bottom: $margin-sm;
+}
+.m-l-sm {
+  margin-left: $margin-sm;
+}
+.m-r-sm {
+  margin-right: $margin-sm;
+}
+.m-t {
+  margin-top: $margin-m;
+}
+.m-b {
+  margin-bottom: $margin-m;
+}
+.m-l {
+  margin-left: $margin-m;
+}
+.m-r {
+  margin-right: $margin-m;
+}
+.p-0 {
+  padding: 0;
+}
+.p-t-0 {
+  padding-top: 0;
+}
+.p-b-0 {
+  padding-bottom: 0;
+}

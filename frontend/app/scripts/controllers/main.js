@@ -8,25 +8,41 @@
  * Controller of the calories
  */
 angular.module('calories')
-  .controller('MainCtrl', function ($rootScope, $timeout, $filter, Restangular) {
+  .controller('MainCtrl', function ($rootScope, $timeout, $filter, Restangular, SweetAlert) {
     var self = this,
         currUser = $rootScope.user,
         prevDate;
 
     self.dateOptions = { startingDay: 1 };
+    self.timeOptions = { timeFormat: 'H:i' };
+    self.calories = {};
+    self.showDate = {};
+    self.editing = {};
+    self.origMeal = {};
+
+    self.toggleDate = function(d) {
+      self.showDate[d] = !self.showDate[d];
+    };
+
+    self.editingMeal = function(m, idx) {
+      var mealTime = new Date(m.meal_date_str + 'T' + m.meal_time_str + ':00');
+      mealTime.setTime(mealTime.getTime() + mealTime.getTimezoneOffset()*60*1000);
+      self.origMeal[m.id] = {date: m.meal_date_str, idx: idx};
+      self.editing[m.id] = Restangular.copy(m);
+      self.editing[m.id].meal_time = mealTime;
+    };
 
     self.sumDateCal = function(d) {
       var total = 0;
       self.meals[d].map(function(m) {
         total += m.calorie;
       });
-      if (total >= currUser.cal_per_day) {
-        var elem = angular.element('[calorie-date="' + d + '"]');
-        elem.attr('panel-class', 'panel-danger')
-          .removeClass('panel-success')
-          .addClass('panel-danger');
-      }
+      self.calories[d] = total;
       return total;
+    };
+
+    self.successOrDanger = function(d) {
+      return (self.calories[d] >= currUser.cal_per_day) ? 'panel-danger' : 'panel-success';
     };
 
     self.loadMore = function(params) {
@@ -81,6 +97,61 @@ angular.module('calories')
       self.meals = [];
 
       self.loadMore();
+    };
+
+    self.closeEditing = function(mid) {
+      delete self.editing[mid];
+    };
+
+    self.saveMeal = function(meal) {
+      var tm = meal.meal_time;
+      meal.meal_time_str = $filter('date')(tm, 'HH:mm');
+      meal.put().then(function(m) {
+        var orig = self.origMeal[m.id];
+        self.meals[orig.date][orig.idx] = m;
+        toastr.clear();
+        toastr.success("Meal updated!");
+        self.closeEditing(m.id);
+      }, function(resp) {
+        toastr.clear();
+        toastr.error("Failed to update meal: " + resp);
+      });
+    };
+
+    var _removeMeal = function(meal) {
+      var mid = meal.id;
+      meal.remove().then(function() {
+        var orig = self.origMeal[mid];
+        self.meals[orig.date].splice(orig.idx, 1);
+        if (self.meals[orig.date].length == 0) {
+          var idx = self.dates.indexOf(orig.date);
+          if (idx >= 0)
+            self.dates.splice(idx, 1);
+        }
+        toastr.clear();
+        toastr.success("Meal deleted!");
+      }, function(resp) {
+        toastr.clear();
+        toastr.error("Failed to delete meal: " + resp);
+      });
+    };
+
+    self.deleteMeal = function(m, idx, ev) {
+      ev.stopPropagation();
+      SweetAlert.swal({
+        title: "Are you sure?",
+        text: "You will not be able to recover the meal!",
+        type: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#dd6b55",
+        closeOnConfirm: true,
+        closeOnCancel: true
+      }, function(isConfirm) {
+        if (isConfirm) {
+          self.origMeal[m.id] = {date: m.meal_date_str, idx: idx};
+          _removeMeal(m);
+        }
+      });
     };
 
     self.clearFilter();

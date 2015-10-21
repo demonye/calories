@@ -23,6 +23,6 @@ class Meal(models.Model):
         timezone.datetime.strftime(timezone.localtime(self.meal_time), fmt)
 
     def save(self, *args, **kwargs):
-        self.meal_time_str = self.format_time('%H:%M')
-        self.meal_date_str = self.format_time('%Y-%m-%d')
+        self.meal_time = datetime.strptime(
+            ' '.join([self.meal_date_str, self.meal_time_str]), '%Y-%m-%d %H:%M')
         super(Meal, self).save()
