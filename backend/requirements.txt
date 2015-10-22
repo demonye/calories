@@ -6,3 +6,4 @@ django-allauth==0.23.0
 Markdown==2.6.2
 django-filter==0.11.0
 pytz==2015.6
+mock==1.3.0

@@ -18,7 +18,6 @@ angular.module('calories')
     self.calories = {};
     self.showDate = {};
     self.editing = {};
-    self.origMeal = {};
 
     Users.getList().then(function(data) {
       self.users = data;
@@ -43,10 +42,32 @@ angular.module('calories')
       self.showDate[d] = !self.showDate[d];
     };
 
-    self.editingMeal = function(m, idx) {
+    var oldItem = new (function() {
+      var _id, _date;
+
+      this.put = function(id, date) {
+        _id = id;
+        _date = date;
+      };
+      this.date = function() {
+        return _date;
+      };
+      this.idx = function() {
+        var items = self.meals[_date],
+            len = items.length;
+        for (var i=0; i<len; i++) {
+          if (items[i].id == _id) {
+            return i;
+          }
+        }
+        return -1
+      };
+    })();
+
+    self.editingMeal = function(m) {
       var mealTime = new Date(m.meal_date_str + 'T' + m.meal_time_str + ':00');
       mealTime.setTime(mealTime.getTime() + mealTime.getTimezoneOffset()*60*1000);
-      self.origMeal[m.id] = {date: m.meal_date_str, idx: idx};
+      oldItem.put(m.id, m.meal_date_str);
       self.editing[m.id] = Restangular.copy(m);
       self.editing[m.id].meal_time = mealTime;
     };
@@ -154,8 +175,10 @@ angular.module('calories')
       var tm = meal.meal_time;
       meal.meal_time_str = $filter('date')(tm, 'HH:mm');
       meal.put().then(function(m) {
-        var orig = self.origMeal[m.id];
-        self.meals[orig.date][orig.idx] = m;
+        var date = oldItem.date(),
+            idx = oldItem.idx();
+        if (idx >= 0)
+          self.meals[date][idx] = m;
         toastr.clear();
         toastr.success("Meal updated!");
         self.closeEditing(m.id);
@@ -168,10 +191,12 @@ angular.module('calories')
     var _removeMeal = function(meal) {
       var mid = meal.id;
       meal.remove().then(function() {
-        var orig = self.origMeal[mid];
-        self.meals[orig.date].splice(orig.idx, 1);
-        if (self.meals[orig.date].length == 0) {
-          var idx = self.dates.indexOf(orig.date);
+        var date = oldItem.date(),
+            idx = oldItem.idx();
+        if (idx >= 0)
+          self.meals[date].splice(idx, 1);
+        if (self.meals[date].length == 0) {
+          var idx = self.dates.indexOf(date);
           if (idx >= 0)
             self.dates.splice(idx, 1);
         }
@@ -183,7 +208,7 @@ angular.module('calories')
       });
     };
 
-    self.deleteMeal = function(m, idx, ev) {
+    self.deleteMeal = function(m, ev) {
       ev.stopPropagation();
       SweetAlert.swal({
         title: "Are you sure?",
@@ -195,7 +220,7 @@ angular.module('calories')
         closeOnCancel: true
       }, function(isConfirm) {
         if (isConfirm) {
-          self.origMeal[m.id] = {date: m.meal_date_str, idx: idx};
+          oldItem.put(m.id, m.meal_date_str);
           _removeMeal(m);
         }
       });

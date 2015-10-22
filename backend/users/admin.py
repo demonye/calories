@@ -67,7 +67,7 @@ class MyUserAdmin(UserAdmin):
         ('Personal info', {
             'fields': ('display_name', 'cal_per_day', 'gender', 'age')
         }),
-        ('Permissions', {'fields': ('perm_level',)}),
+        ('Permissions', {'fields': ('is_active', 'perm_level',)}),
     )
     # add_fieldsets is not a standard ModelAdmin attribute. UserAdmin
     # overrides get_fieldsets to use this attribute when creating a user.

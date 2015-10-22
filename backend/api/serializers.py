@@ -11,6 +11,18 @@ class MealSerializer(serializers.HyperlinkedModelSerializer):
             'what', 'calorie', 'comment'
         )
 
+    # Validate if user matches parent_lookup_object_id
+    """
+    def create(self, validate_data):
+        ctx = self.context['request'].parser_context
+        user_id = int(ctx['kwargs']['parent_lookup_object_id'])
+        user = validate_data.['user']
+        if user.id != user_id:
+            raise serializers.ValidationError("Invalidate user information")
+
+        return Meal.objects.create(**validate_data)
+    """
+
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
@@ -25,10 +37,20 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
 
     def create(self, validate_data):
         password = validate_data.pop('password')
+        if not self.request.user.is_admin and 'perm_level' in validate_data:
+            validate_data.pop('perm_level')
         user = MyUser.objects.create(**validate_data)
         user.set_password(password)
         user.save()
         return user
+
+    def update(self, user, validate_data):
+        for k, v in validate_data.items():
+            if k != 'perm_level' or self.request.user.is_admin:
+                setattr(user, k, v)
+        user.save()
+        return user
+
 
 
 class MyLoginSerializer(serializers.ModelSerializer):

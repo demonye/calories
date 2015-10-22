@@ -84,17 +84,6 @@ class MealViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
             )
         return queryset
 
-#    def create(self, request):
-#        import ipdb; ipdb.set_trace()  # XXX BREAKPOINT
-#        user_id = 1     # request.parser_context['kwargs']['parent_lookup_object_id']
-#        serializer = self.get_serializer(data=request.DATA)
-#        serializer.user_id = user_id
-#        if serializer.is_valid():
-#            serializer.save()
-#            return Response(serializer.data, status=status.HTTP_201_CREATED)
-#
-#        return super(MealViewSet, self).create(request)
-
 
 class UserViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
     queryset = MyUser.objects.none()

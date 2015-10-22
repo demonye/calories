@@ -37,6 +37,10 @@ angular.module('calories')
       {value: 'O', text: 'Other'}
     ];
 
+    self.isAdmin = function() {
+      return currUser.is_admin;
+    };
+
     self.showGender = function() {
       var selected = $filter('filter') (self.genders, {value: self.profile.gender});
       return (self.profile.gender && selected.length) ? selected[0].text : '';
@@ -56,7 +60,8 @@ angular.module('calories')
     };
 
     self.update = function(profile, field, value) {
-      var params = {};
+      var params = {},
+          oldValue = profile[field];
       params[field] = value;
       profile.patch(params).then(function(data) {
         toastr.clear();
@@ -67,6 +72,7 @@ angular.module('calories')
       }, function(resp) {
         toastr.clear();
         toastr.error("Failed to update user " + profile.email + "!");
+        profile[field] = oldValue;
       });
     };
 

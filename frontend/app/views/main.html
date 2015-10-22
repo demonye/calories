@@ -54,7 +54,7 @@
   <div class="col-md-8 meal-list">
     <h4>
       <i class="fa fa-list"></i> Meal List
-      <a class="btn btn-success btn-sm pull-right"
+      <a class="btn btn-success btn-sm pull-right" ng-show="main.dates.length > 0"
         ng-click="main.addNewMeal = true">Add <i class="fa fa-plus"></i></a>
     </h4>
     <div ng-hide="main.dates.length > 0">
@@ -113,7 +113,7 @@
         <div class="panel-body animated fadeIn" ng-if="main.showDate[d]">
           <div class="row meal-item" ng-repeat-start="m in main.meals[d] | orderBy:'meal_time_str'"
             ng-class-odd="'meal-item-odd'" ng-class-even="'meal-item-even'"
-            ng-click="main.editingMeal(m, $index)">
+            ng-click="main.editingMeal(m)">
             <div class="col-md-2 m-t-xs m-b-xs text-right">
               <strong><i>{{ m.meal_time_str }}</i></strong>
             </div>
@@ -124,7 +124,7 @@
               {{ m.calorie }}
             </div>
             <div class="col-md-2 m-t-xs m-b-xs text-info text-right">
-              <span class="meal-item-delete" ng-click="main.deleteMeal(m, $index, $event)"><i class="fa fa-trash-o fa-fw"></i></span>
+              <span class="meal-item-delete" ng-click="main.deleteMeal(m, $event)"><i class="fa fa-trash-o fa-fw"></i></span>
             </div>
           </div>
           <div class="panel panel-success animated fadeIn" ng-repeat-end ng-if="main.editing[m.id] !== undefined">
