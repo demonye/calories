@@ -37,7 +37,8 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
 
     def create(self, validate_data):
         password = validate_data.pop('password')
-        if not self.request.user.is_admin and 'perm_level' in validate_data:
+        req_user = self.context['request'].user
+        if not req_user.is_admin and 'perm_level' in validate_data:
             validate_data.pop('perm_level')
         user = MyUser.objects.create(**validate_data)
         user.set_password(password)
@@ -45,8 +46,9 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
         return user
 
     def update(self, user, validate_data):
+        req_user = self.context['request'].user
         for k, v in validate_data.items():
-            if k != 'perm_level' or self.request.user.is_admin:
+            if k != 'perm_level' or req_user.is_admin:
                 setattr(user, k, v)
         user.save()
         return user
