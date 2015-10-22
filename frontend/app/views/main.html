@@ -1,5 +1,15 @@
 <div class="row m-b">
   <div class="col-md-4 m-b">
+    <label>Select User:</label>
+    <div class="input-group">
+      <span class="input-group-addon">
+        <i class="fa fa-user"></i>
+      </span>
+      <select class="form-control" ng-model="main.dispUser" ng-change="main.changeDispUser(main.dispUser)"
+        ng-options="u as main.displayName(u) for u in main.users">
+      </select>
+    </div>
+    <hr class="m-t m-b">
     <div class="panel panel-default">
       <div class="panel-heading">
         <h4 class="panel-title"><i class="fa fa-filter"></i> Filter</h4>
@@ -7,7 +17,7 @@
       <div class="panel-body">
         <form class="form-inline meal-filter">
           <div class="form-group">
-            <label>Date: </label>
+            <label>Date range: </label>
             <div class="input-group input-group-sm">
               <span class="input-group-addon">From</span>
               <input type="datetime" class="form-control" date-time ng-model="main.filter.from_date"
@@ -19,8 +29,8 @@
                 view="date" min-view="date" auto-close="true" format="yyyy-MM-dd">
             </div>
           </div>
-          <div class="form-group">
-            <label>Time: </label>
+          <div class="form-group m-t-sm">
+            <label>Time range: </label>
             <div class="input-group input-group-sm">
               <span class="input-group-addon">From</span>
               <input class="form-control" ui-timepicker="main.timeOptions" ng-model="main.filter.from_time">
@@ -42,76 +52,114 @@
   </div>
 
   <div class="col-md-8 meal-list">
-    <uib-tabset>
-      <uib-tab>
-        <uib-tab-heading>
-          <i class="fa fa-list"></i> Meal List
-        </uib-tab-heading>
-        <div class="m-t" infinite-scroll="main.loadMore()"
-            infinite-scroll-disabled="main.noMore || main.loading">
-
-          <div class="panel" ng-repeat="d in main.dates" ng-class="main.successOrDanger(d)">
-            <div class="panel-heading pointer" ng-click="main.toggleDate(d)">
-              {{ d|date:'MMM dd, yyyy' }}
-              <span class="pull-right"> Total: {{ main.sumDateCal(d) }} (cal)</span>
+    <h4>
+      <i class="fa fa-list"></i> Meal List
+      <a class="btn btn-success btn-sm pull-right"
+        ng-click="main.addNewMeal = true">Add <i class="fa fa-plus"></i></a>
+    </h4>
+    <div ng-hide="main.dates.length > 0">
+      <div class="jumbotron">
+        <h3>No meals yet!</h3>
+        <hr>
+        <button type="button" class="btn btn-success" ng-click="main.addNewMeal = true">
+          Add Now <i class="fa fa-plus"></i>
+        </button>
+      </div>
+    </div>
+        <div class="panel panel-success animated fadeIn" ng-if="main.addNewMeal">
+          <div class="panel-body">
+            <form class="form-inline meal-item-form">
+              <div class="form-group form-group-sm">
+                <div class="input-group">
+                  <div class="input-group-addon"><small>Date</small></div>
+                  <input type="datetime" class="form-control" date-time ng-model="main.newMeal.meal_date_str" view="date" min-view="date" auto-close="true" format="yyyy-MM-dd">
+                </div>
+              </div>
+              <div class="form-group form-group-sm">
+                <div class="input-group">
+                  <div class="input-group-addon"><small>Time</small></div>
+                  <input class="form-control" ui-timepicker="main.timeOptions" ng-model="main.newMeal.meal_time">
+                </div>
+              </div>
+              <div class="form-group form-group-sm">
+                <div class="input-group">
+                  <div class="input-group-addon"><small>Meal</small></div>
+                  <input type="text" class="form-control" ng-model="main.newMeal.what">
+                </div>
+              </div>
+              <div class="form-group form-group-sm">
+                <div class="input-group">
+                  <div class="input-group-addon"><small>Calorie</small></div>
+                  <input type="number" class="form-control" ng-model="main.newMeal.calorie">
+                </div>
+              </div>
+            </form>
+          </div>
+          <div class="panel-footer">
+            <div class="btn-group btn-group-sm">
+              <button class="btn btn-success" ng-click="main.addMeal(main.newMeal)">Save</button>
+              <button class="btn btn-default" ng-click="main.addNewMeal = false">Cancel</button>
             </div>
-            <div class="panel-body animated fadeIn" ng-if="main.showDate[d]">
-              <div class="row meal-item" ng-repeat-start="m in main.meals[d]"
-                ng-class-odd="'meal-item-odd'" ng-class-even="'meal-item-even'"
-                ng-click="main.editingMeal(m, $index)">
-                <div class="col-md-2 m-t-xs m-b-xs text-right">
-                  <strong><i>{{ m.meal_time_str }}</i></strong>
-                </div>
-                <div class="col-md-5 m-t-xs m-b-xs">
-                  {{ m.what }}
-                </div>
-                <div class="col-md-3 m-t-xs m-b-xs">
-                  {{ m.calorie }}
-                </div>
-                <div class="col-md-2 m-t-xs m-b-xs text-info text-right">
-                  <span class="meal-item-delete" ng-click="main.deleteMeal(m, $index, $event)"><i class="fa fa-trash-o fa-fw"></i></span>
-                </div>
               </div>
-              <div class="panel panel-success animated fadeIn" ng-repeat-end ng-if="main.editing[m.id] !== undefined">
-                <div class="panel-body">
-                  <form class="form-inline meal-item-form">
-                    <div class="form-group form-group-sm">
-                      <div class="input-group">
-                        <div class="input-group-addon"><small>Time</small></div>
-                        <input class="form-control" ui-timepicker="main.timeOptions" ng-model="main.editing[m.id].meal_time">
-                      </div>
-                    </div>
-                    <div class="form-group form-group-sm">
-                      <div class="input-group">
-                        <div class="input-group-addon"><small>Meal</small></div>
-                        <input type="text" class="form-control" ng-model="main.editing[m.id].what">
-                      </div>
-                    </div>
-                    <div class="form-group form-group-sm">
-                      <div class="input-group">
-                        <div class="input-group-addon"><small>Calorie</small></div>
-                        <input type="number" class="form-control" ng-model="main.editing[m.id].calorie">
-                      </div>
-                    </div>
-                  </form>
+          </div>
+    <hr>
+    <div class="m-t" infinite-scroll="main.loadMore()"
+        infinite-scroll-disabled="main.noMore || main.loading">
+      <div class="panel" ng-repeat="d in main.dates | orderBy:'-'" ng-class="main.successOrDanger(d)">
+        <div class="panel-heading pointer" ng-click="main.toggleDate(d)">
+          {{ d|date:'MMM dd, yyyy' }}
+          <span class="pull-right"> Total: {{ main.sumDateCal(d) }} (cal)</span>
+        </div>
+        <div class="panel-body animated fadeIn" ng-if="main.showDate[d]">
+          <div class="row meal-item" ng-repeat-start="m in main.meals[d] | orderBy:'meal_time_str'"
+            ng-class-odd="'meal-item-odd'" ng-class-even="'meal-item-even'"
+            ng-click="main.editingMeal(m, $index)">
+            <div class="col-md-2 m-t-xs m-b-xs text-right">
+              <strong><i>{{ m.meal_time_str }}</i></strong>
+            </div>
+            <div class="col-md-5 m-t-xs m-b-xs">
+              {{ m.what }}
+            </div>
+            <div class="col-md-3 m-t-xs m-b-xs">
+              {{ m.calorie }}
+            </div>
+            <div class="col-md-2 m-t-xs m-b-xs text-info text-right">
+              <span class="meal-item-delete" ng-click="main.deleteMeal(m, $index, $event)"><i class="fa fa-trash-o fa-fw"></i></span>
+            </div>
+          </div>
+          <div class="panel panel-success animated fadeIn" ng-repeat-end ng-if="main.editing[m.id] !== undefined">
+            <div class="panel-body">
+              <form class="form-inline meal-item-form">
+                <div class="form-group form-group-sm">
+                  <div class="input-group">
+                    <div class="input-group-addon"><small>Time</small></div>
+                    <input class="form-control" ui-timepicker="main.timeOptions" ng-model="main.editing[m.id].meal_time">
+                  </div>
                 </div>
-                <div class="panel-footer">
-                  <div class="btn-group btn-group-sm">
-                    <button class="btn btn-success" ng-click="main.saveMeal(main.editing[m.id])">Save</button>
-                    <button class="btn btn-default" ng-click="main.closeEditing(m.id)">Cancel</button>
-                    </div>
+                <div class="form-group form-group-sm">
+                  <div class="input-group">
+                    <div class="input-group-addon"><small>Meal</small></div>
+                    <input type="text" class="form-control" ng-model="main.editing[m.id].what">
+                  </div>
                 </div>
-              </div>
+                <div class="form-group form-group-sm">
+                  <div class="input-group">
+                    <div class="input-group-addon"><small>Calorie</small></div>
+                    <input type="number" class="form-control" ng-model="main.editing[m.id].calorie">
+                  </div>
+                </div>
+              </form>
+            </div>
+            <div class="panel-footer">
+              <div class="btn-group btn-group-sm">
+                <button class="btn btn-success" ng-click="main.saveMeal(main.editing[m.id])">Save</button>
+                <button class="btn btn-default" ng-click="main.closeEditing(m.id)">Cancel</button>
+                </div>
             </div>
           </div>
         </div>
-      </uib-tab>
-      <uib-tab>
-        <uib-tab-heading>
-          <i class="fa fa-plus"></i> New Meal
-        </uib-tab-heading>
-      </uib-tab>
-    </uib-tabset>
+      </div>
+    </div>
     <!--
     <div>
       <a class="btn btn-default btn-sm btn-block">

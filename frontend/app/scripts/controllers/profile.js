@@ -9,7 +9,7 @@
  */
 angular.module('calories')
   .controller('ProfileCtrl', function($rootScope, $filter, $timeout, $location,
-        djangoAuth, Restangular, SweetAlert) {
+        djangoAuth, Users, SweetAlert) {
     var self = this,
         currUser = $rootScope.user;
     self.users = [];
@@ -18,7 +18,7 @@ angular.module('calories')
     self.newUser = {};
 
     self.reload = function() {
-      Restangular.all('users').getList().then(function(data) {
+      Users.getList().then(function(data) {
         for (var i=0; i<data.length; i++) {
           var user = data[i];
           if (user.id == currUser.id) {
@@ -44,7 +44,7 @@ angular.module('calories')
 
     self.save = function() {
       self.saveingNewUser = true;
-      Restangular.all('users').post(self.newUser).then(function(data) {
+      Users.post(self.newUser).then(function(data) {
         self.saveingNewUser = false;
         self.newUser = {};
         toastr.success("New user added!");

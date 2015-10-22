@@ -4,8 +4,9 @@ from meals.models import Meal
 from django.db.models import Q
 from django.utils import timezone
 from rest_framework.response import Response
-from rest_framework import viewsets
-from rest_framework.pagination import PageNumberPagination      # , BasePagination
+from rest_framework import viewsets, status
+from rest_framework.pagination import PageNumberPagination
+from rest_framework_extensions.mixins import NestedViewSetMixin
 from users.permissions import IsOwnerOrAdminOrLowerLevel as IsPermitted
 from api.serializers import MealSerializer, UserSerializer
 from collections import OrderedDict
@@ -65,7 +66,7 @@ class MealFilter(django_filters.FilterSet):
         fields = ["from_date", "to_date", "from_time", "to_time"]
 
 
-class MealViewSet(viewsets.ModelViewSet):
+class MealViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
     queryset = Meal.objects.none()
     serializer_class = MealSerializer
     permission_classes = (IsPermitted,)
@@ -73,15 +74,29 @@ class MealViewSet(viewsets.ModelViewSet):
     filter_class = MealFilter
 
     def get_queryset(self):
-        user = self.request.user
-        if user.is_admin:
-            return Meal.objects.all()
-        return Meal.objects.filter(Q(user_id=user.id) | \
-            (Q(user__perm_level__gt=0) & Q(user__perm_level__lt=user.perm_level))
-        )
+        req_user = self.request.user
+        user_id = self.request.parser_context['kwargs']['parent_lookup_object_id']
+        queryset = Meal.objects.filter(user_id=user_id)
+        if not req_user.is_admin:
+            queryset = queryset.filter(
+                Q(user=req_user) | \
+                (Q(user__perm_level__gt=0) & Q(user__perm_level__lt=req_user.perm_level))
+            )
+        return queryset
+
+#    def create(self, request):
+#        import ipdb; ipdb.set_trace()  # XXX BREAKPOINT
+#        user_id = 1     # request.parser_context['kwargs']['parent_lookup_object_id']
+#        serializer = self.get_serializer(data=request.DATA)
+#        serializer.user_id = user_id
+#        if serializer.is_valid():
+#            serializer.save()
+#            return Response(serializer.data, status=status.HTTP_201_CREATED)
+#
+#        return super(MealViewSet, self).create(request)
 
 
-class UserViewSet(viewsets.ModelViewSet):
+class UserViewSet(NestedViewSetMixin, viewsets.ModelViewSet):
     queryset = MyUser.objects.none()
     serializer_class = UserSerializer
     permission_classes = (IsPermitted,)

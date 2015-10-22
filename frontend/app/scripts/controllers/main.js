@@ -8,7 +8,7 @@
  * Controller of the calories
  */
 angular.module('calories')
-  .controller('MainCtrl', function ($rootScope, $timeout, $filter, Restangular, SweetAlert) {
+  .controller('MainCtrl', function ($rootScope, $timeout, $filter, Users, Meals, Restangular, SweetAlert) {
     var self = this,
         currUser = $rootScope.user,
         prevDate;
@@ -19,6 +19,25 @@ angular.module('calories')
     self.showDate = {};
     self.editing = {};
     self.origMeal = {};
+
+    Users.getList().then(function(data) {
+      self.users = data;
+      for (var i=0; i<data.length; i++) {
+        if (currUser.id == data[i].id) {
+          self.dispUser = data[i];
+          self.clearFilter();
+          break;
+        }
+      }
+    });
+
+    self.displayName = function(u) {
+      return u.display_name || u.email;
+    };
+
+    self.changeDispUser = function(u) {
+      self.applyFilter();
+    };
 
     self.toggleDate = function(d) {
       self.showDate[d] = !self.showDate[d];
@@ -42,7 +61,7 @@ angular.module('calories')
     };
 
     self.successOrDanger = function(d) {
-      return (self.calories[d] >= currUser.cal_per_day) ? 'panel-danger' : 'panel-success';
+      return (self.calories[d] >= self.dispUser.cal_per_day) ? 'panel-danger' : 'panel-success';
     };
 
     self.loadMore = function(params) {
@@ -52,26 +71,28 @@ angular.module('calories')
           params.to_date =  prevDate;
       }
       self.loading = true;
-      Restangular.all('meals').getList(params).then(function(data) {
-        data.map(function(m) {
-          var dtstr = m.meal_date_str;
-          if (self.dates.indexOf(dtstr) == -1) {
-            self.dates.push(dtstr);
-            self.meals[dtstr] = [m];
+      if (self.dispUser) {
+        Meals.query(self.dispUser).getList(params).then(function(data) {
+          data.map(function(m) {
+            var dtstr = m.meal_date_str;
+            if (self.dates.indexOf(dtstr) == -1) {
+              self.dates.push(dtstr);
+              self.meals[dtstr] = [m];
+            } else {
+              self.meals[dtstr].push(m);
+            }
+          });
+          if (data.length == 0) {
+            $timeout(function() {
+              self.loading = false;
+              self.noMore = true;
+            }, 0);
           } else {
-            self.meals[dtstr].push(m);
+            self.loading = false;
+            prevDate = data.meta.prev_date;
           }
         });
-        if (data.length == 0) {
-          $timeout(function() {
-            self.loading = false;
-            self.noMore = true;
-          }, 0);
-        } else {
-          self.loading = false;
-          prevDate = data.meta.prev_date;
-        }
-      });
+      }
     };
 
     self.applyFilter = function() {
@@ -101,6 +122,32 @@ angular.module('calories')
 
     self.closeEditing = function(mid) {
       delete self.editing[mid];
+    };
+
+    self.addMeal = function(meal) {
+      meal.meal_date_str = $filter('date')(meal.meal_date_str, 'yyyy-MM-dd');
+      meal.meal_time_str = $filter('date')(meal.meal_time, 'HH:mm');
+      delete meal.meal_time;
+      meal.user = self.dispUser.url;
+      Meals.query(self.dispUser).post(meal).then(function(data) {
+        var dtstr = data.meal_date_str;
+        self.addNewMeal = false;
+        if (self.meals[dtstr]) {
+          self.meals[dtstr].push(data);
+        } else {
+          self.meals[dtstr] = data;
+        }
+        if (!self.dates[dtstr]) {
+          self.dates.push(dtstr);
+        }
+        self.showDate[dtstr] = true;
+        self.newMeal = {};
+        toastr.clear();
+        toastr.success("Meal added!");
+      }, function(resp) {
+        toastr.clear();
+        toastr.error("Failed to add meal: " + resp);
+      });
     };
 
     self.saveMeal = function(meal) {
@@ -153,6 +200,4 @@ angular.module('calories')
         }
       });
     };
-
-    self.clearFilter();
   });

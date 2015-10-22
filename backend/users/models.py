@@ -74,6 +74,10 @@ class MyUser(AbstractBaseUser):
         return self.perm_level == 0
 
     @property
+    def is_superuser(self):
+        return self.perm_level == 0
+
+    @property
     def is_staff(self):
         return True
 

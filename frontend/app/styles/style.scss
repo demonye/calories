@@ -31,3 +31,6 @@
   border-radius: 6px;
   box-shadow: $border-shadow;
 }
+[date-picker-wrapper] {
+  z-index: 30;
+}
