@@ -1,4 +1,4 @@
-H1 backend
+#1 backend
 
 * API built based on django rest framework, run following commands to start server
 
@@ -9,12 +9,10 @@ python manage.py migrate
 python manage.py runserver
 ```
 
-H1 frontend
+#1 frontend
 
 * Built by angularjs and bootstrap, run the command to start
 
 ```
 grunt serve
 ```
-
-
