@@ -33,7 +33,6 @@ angular.module('calories')
   $urlMatcherFactoryProvider.strictMode(false);
   $urlRouterProvider.otherwise("/index/404");
   $urlRouterProvider.when('', '/index/main');
-  $urlRouterProvider.when('/reset', '/auth/reset-confirm');
 
   $stateProvider
     .state('auth', {

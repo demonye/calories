@@ -130,7 +130,7 @@ angular.module('calories')
           );
         },
         confirmReset: function(data) {
-          // data: uid, token, password1, password2
+          // data: uid, token, new_password1, new_password2
           var self = this;
           return self.request('post', '/password/reset/confirm/', data).then(
             function(data) { self._emit('auth:password-reset-confirm-success', data); },
