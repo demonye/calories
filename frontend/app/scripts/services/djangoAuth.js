@@ -59,7 +59,7 @@ angular.module('calories')
         },
         _logged_in: function(ev, data) {
           if (!djangoAuth.use_session && data.key) {
-            // $http.defaults.headers.common.Authorization = 'Token ' + data.key;
+            $http.defaults.headers.common.Authorization = 'Token ' + data.key;
             $cookies.token = data.key;
           }
           djangoAuth.authenticated = true;

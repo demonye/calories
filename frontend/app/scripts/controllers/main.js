@@ -35,7 +35,8 @@ angular.module('calories')
     };
 
     self.changeDispUser = function(u) {
-      self.applyFilter(false);
+      self.clearFilter();
+      // self.applyFilter(false);
     };
 
     self.toggleDate = function(d) {
