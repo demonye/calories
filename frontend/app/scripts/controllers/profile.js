@@ -16,6 +16,7 @@ angular.module('calories')
     self.profile = {};
     self.editing = {};
     self.newUser = {};
+    self.err = {};
 
     self.reload = function() {
       Users.getList().then(function(data) {
@@ -51,10 +52,12 @@ angular.module('calories')
       Users.post(self.newUser).then(function(data) {
         self.saveingNewUser = false;
         self.newUser = {};
+        self.err = {};
         toastr.success("New user added!");
         self.reload();
       }, function(resp) {
         toastr.clear();
+        self.err = resp.data;
         toastr.error("Failed to create user " + self.newUser.email + "!");
       });
     };

@@ -26,6 +26,7 @@ angular.module('calories')
       }
       djangoAuth.login(self.form);
     };
+    angular.element('input[name=email]').focus();
   })
 
   .controller('RegisterCtrl', function($scope, $state, djangoAuth) {
@@ -37,6 +38,7 @@ angular.module('calories')
       self.form.password2 = self.form.password1;
       djangoAuth.register(self.form);
     };
+    angular.element('input[name=email]').focus();
   })
 
   .controller('ConfirmRegisterCtrl', function($scope, $state, djangoAuth) {
@@ -52,6 +54,7 @@ angular.module('calories')
     self.submit = function() {
       djangoAuth.resetPassword(self.form);
     };
+    angular.element('input[name=email]').focus();
   })
 
   .controller('ConfirmResetCtrl', function($scope, $state, djangoAuth) {

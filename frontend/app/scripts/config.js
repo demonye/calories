@@ -125,7 +125,6 @@ angular.module('calories')
   });
 
   $rootScope.$on('auth:validation-error', function(ev, resp) {
-    console.log(ev);
     $state.go('auth.login');
   });
 
@@ -154,7 +153,6 @@ angular.module('calories')
   $rootScope.$on('auth:email-confirmation-success', function (ev, resp) {
     $state.go('index.main');
     toastr.clear();
-    console.log($rootScope.user);
     toastr.success("Welcome, your account has been verified.");
   });
 

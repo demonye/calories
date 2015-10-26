@@ -2,11 +2,16 @@ from django.test import TestCase
 from django.contrib.auth.tokens import default_token_generator
 from django.utils.http import urlsafe_base64_encode
 from django.utils.encoding import force_bytes
+from django.utils import timezone
 from allauth.account.models import EmailAddress
 from rest_framework.test import APIClient
 from users.models import MyUser
+from meals.models import Meal
 import json
 import re
+import copy
+from datetime import datetime, timedelta
+import random
 
 
 class ApiTestCase(TestCase):
@@ -204,3 +209,92 @@ class UserApiTestCase(ApiTestCase):
         user = MyUser.objects.create_user(self.email, '123456')
         r = self.client.delete("{}/{}".format(self.user_url, user.id))
         assert r.status_code == 204 and self.get_user_by_email() is None
+
+
+class MealApiTestCase(ApiTestCase):
+
+    def setUp(self):
+        self.url = '/api/v1/users/1/meals'
+        self.data = {
+            'meal_date_str': '2015-10-26',
+            'meal_time_str': '12:00',
+            'what': 'lunch',
+            'user_id': 1,
+            'calorie': 900
+        }
+        super(MealApiTestCase, self).setUp()
+
+    def create_meal(self, data=None):
+        if data is None:
+            meal = Meal.objects.create(**self.data)
+        else:
+            meal = Meal.objects.create(**data)
+        return meal
+
+    def bulk_create(self):
+        for d in range(5):
+            for t in range(3):
+                data = {
+                    'meal_date_str': datetime.strftime(datetime(2015, 10, 21) + timedelta(d), '%Y-%m-%d'),
+                    'meal_time_str': '{:02d}:00'.format(7 + t*5),
+                    'what': 'meal {}'.format(t+1),
+                    'user_id': 1,
+                    'calorie':  600 + int(100 * (0.5 - random.random()))
+                }
+                self.create_meal(data)
+
+    def get_meal(self, id_):
+        meal = None
+        try:
+            meal = Meal.objects.get(id=id_)
+        except Meal.DoesNotExist:
+            pass
+        return meal
+
+
+    def test_create_meal(self):
+        data = copy.deepcopy(self.data)
+        id_ = data.pop('user_id')
+        data['user'] = '/api/v1/users/{}'.format(id_)
+        r = self.client.post(self.url, data=data)
+        assert r.status_code == 201 and self.get_meal(r.data['id']) is not None
+
+    def test_delete_meal(self):
+        meal = self.create_meal()
+        r = self.client.delete("{}/{}".format(self.url, meal.id))
+        assert r.status_code == 204 and self.get_meal(meal.id) is None
+
+    def test_modify_meal(self):
+        meal = self.create_meal()
+        data = {
+            'meal_date_str': '2015-10-25',
+            'meal_time_str': '17:00',
+            'what': 'dinner',
+            'calorie': 1000,
+            'user': '/api/v1/users/{}'.format(self.data['user_id']),
+            'comment': 'This is comment!'
+        }
+        r = self.client.put("{}/{}".format(self.url, meal.id), data=data)
+        assert r.status_code == 200
+        meal = self.get_meal(r.data['id'])
+        assert meal.meal_date_str == '2015-10-25'
+        assert meal.meal_time_str == '17:00'
+        assert meal.what == 'dinner'
+        assert meal.calorie == 1000
+        assert meal.comment == 'This is comment!'
+
+    def test_get_meals(self):
+        self.bulk_create()
+        r = self.client.get(self.url)
+        assert r.status_code == 200 and len(r.data['results']) == 15
+
+    def test_filter_meals(self):
+        self.bulk_create()
+        data = {
+            'from_date': '2015-10-21',
+            'to_date': '2015-10-22',
+            'from_time': '10:00',
+            'to_time': '13:00'
+        }
+        r = self.client.get(self.url, data=data)
+        assert r.status_code == 200 and len(r.data['results']) == 2

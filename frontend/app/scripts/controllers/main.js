@@ -35,7 +35,7 @@ angular.module('calories')
     };
 
     self.changeDispUser = function(u) {
-      self.applyFilter();
+      self.applyFilter(false);
     };
 
     self.toggleDate = function(d) {
@@ -116,13 +116,16 @@ angular.module('calories')
       }
     };
 
-    self.applyFilter = function() {
-      self.filter.from_date = $filter('date')(self.filter.from_date, 'yyyy-MM-dd');
-      self.filter.to_date = $filter('date')(self.filter.to_date, 'yyyy-MM-dd');
-      self.filter.from_time = $filter('date')(self.filter.from_time, 'HH:mm');
-      self.filter.to_time = $filter('date')(self.filter.to_time, 'HH:mm');
+    self.applyFilter = function(filtering) {
       self.meals = self.dates = [];
-      self.loadMore(self.filter);
+      self.filter.isFiltering = filtering == undefined ? true : filtering;
+      var params = {
+        from_date: $filter('date')(self.filter.from_date, 'yyyy-MM-dd'),
+        to_date: $filter('date')(self.filter.to_date, 'yyyy-MM-dd'),
+        from_time: $filter('date')(self.filter.from_time, 'HH:mm'),
+        to_time: $filter('date')(self.filter.to_time, 'HH:mm')
+      };
+      self.loadMore(params);
     };
 
     self.clearFilter = function() {
@@ -130,7 +133,8 @@ angular.module('calories')
         from_date: "",
         to_date: "",
         from_date: "",
-        to_time: ""
+        to_time: "",
+        isFiltering: false
       };
       prevDate = null;
       self.loading = false;
@@ -145,6 +149,13 @@ angular.module('calories')
       delete self.editing[mid];
     };
 
+    self.showNewMeal = function() {
+      self.addNewMeal = true;
+      $timeout(function() {
+        angular.element('input[name=meal_date]').focus();
+      }, 0);
+    };
+
     self.addMeal = function(meal) {
       meal.meal_date_str = $filter('date')(meal.meal_date_str, 'yyyy-MM-dd');
       meal.meal_time_str = $filter('date')(meal.meal_time, 'HH:mm');
@@ -156,9 +167,9 @@ angular.module('calories')
         if (self.meals[dtstr]) {
           self.meals[dtstr].push(data);
         } else {
-          self.meals[dtstr] = data;
+          self.meals[dtstr] = [data];
         }
-        if (!self.dates[dtstr]) {
+        if (self.dates.indexOf(dtstr) == -1) {
           self.dates.push(dtstr);
         }
         self.showDate[dtstr] = true;

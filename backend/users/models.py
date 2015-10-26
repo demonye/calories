@@ -36,7 +36,7 @@ class MyUser(AbstractBaseUser):
     )
 
     email = models.EmailField(unique=True)
-    display_name = models.CharField(max_length=64)
+    display_name = models.CharField(max_length=64, null=True, blank=True)
     cal_per_day = models.IntegerField(default=2500)
     gender = models.CharField(max_length=1, choices=GENDER_CHOICES, null=True, blank=True)
     age = models.SmallIntegerField(null=True, blank=True)

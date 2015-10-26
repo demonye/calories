@@ -102,48 +102,55 @@
         </uib-tab-heading>
 
         <form class="m-t-sm text-muted form-horizontal" role="form">
-          <div class="form-group">
+            <div class="form-group" ng-class="{'has-error' : prof.err.email}">
             <label class="col-sm-4 control-label"> <strong>Email</strong></label>
             <div class="col-sm-8">
               <input type="email" class="form-control" ng-model="prof.newUser.email">
+              <span ng-show="prof.err.email" class="help-block">{{ prof.err.email[0] }}</span>
             </div>
           </div>
-          <div class="form-group">
+          <div class="form-group" ng-class="{'has-error' : prof.err.display_name}">
             <label class="col-sm-4 control-label"> <strong>Display Name</strong></label>
             <div class="col-sm-8">
               <input type="text" class="form-control" ng-model="prof.newUser.display_name">
+              <span ng-show="prof.err.display_name" class="help-block">{{ prof.err.display_name[0] }}</span>
             </div>
           </div>
-          <div class="form-group">
+          <div class="form-group" ng-class="{'has-error' : prof.err.password}">
             <label class="col-sm-4 control-label"> <strong>Password</strong></label>
             <div class="col-sm-8">
               <one-password-input password-var="prof.newUser.password"></one-password-input>
+              <span ng-show="prof.err.password" class="help-block">{{ prof.err.password[0] }}</span>
             </div>
           </div>
-          <div class="form-group">
+          <div class="form-group" ng-class="{'has-error' : prof.err.gender}">
             <label class="col-sm-4 control-label"> <strong>Gender</strong></label>
             <div class="col-sm-8">
               <select class="form-control" ng-model="prof.newUser.gender">
                 <option ng-repeat="g in prof.genders" value="{{g.value}}">{{g.text}}</option>
               </select>
+              <span ng-show="prof.err.gender" class="help-block">{{ prof.err.gender[0] }}</span>
             </div>
           </div>
-          <div class="form-group">
+          <div class="form-group" ng-class="{'has-error' : prof.err.age}">
             <label class="col-sm-4 control-label"> <strong>Age</strong></label>
             <div class="col-sm-8">
               <input type="number" class="form-control" ng-model="prof.newUser.age">
+              <span ng-show="prof.err.age" class="help-block">{{ prof.err.age[0] }}</span>
             </div>
           </div>
-          <div class="form-group">
+          <div class="form-group" ng-class="{'has-error' : prof.err.cal_per_day}">
             <label class="col-sm-4 control-label"> <strong>Calories per Day</strong></label>
             <div class="col-sm-8">
               <input type="number" class="form-control" ng-model="prof.newUser.cal_per_day">
+              <span ng-show="prof.err.cal_per_day" class="help-block">{{ prof.err.cal_per_day[0] }}</span>
             </div>
           </div>
-          <div class="row m-sm" ng-if="prof.isAdmin()">
-            <label class="col-sm-4"> <strong>Permission Level</strong></label>
+          <div class="form-group" ng-if="prof.isAdmin()" ng-class="{'has-error' : prof.err.perm_level}">
+            <label class="col-sm-4 control-label"> <strong>Permission Level</strong></label>
             <div class="col-sm-8">
               <input type="number" class="form-control" ng-model="prof.newUser.perm_level">
+              <span ng-show="prof.err.perm_level" class="help-block">{{ prof.err.perm_level[0] }}</span>
             </div>
           </div>
         </form>

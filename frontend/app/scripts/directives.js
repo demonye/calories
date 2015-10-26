@@ -16,8 +16,7 @@ angular.module('calories')
                 '<i class="toggle-eye fa fa-eye"></i></span></div>',
       link: function(scope, element, attrs) {
         var inputElem = element.find('input'),
-            iconElem = element.find('i.toggle-eye'),
-            currType = inputElem.attr('type');
+            iconElem = element.find('i.toggle-eye');
 
         scope.placeholder = attrs.placeHolder;
         if (attrs.icon) {
@@ -25,6 +24,7 @@ angular.module('calories')
         }
 
         scope.toggle = function() {
+          currType = inputElem.attr('type');
           if (currType == 'password') {
             inputElem.attr('type', 'text');
             iconElem.removeClass('fa-eye').addClass('fa-eye-slash');
