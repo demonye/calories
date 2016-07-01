@@ -11,7 +11,7 @@ python manage.py runserver
 
 # frontend
 
-* Built by angularjs and bootstrap, run the command to start
+* Built by AngularJS and bootstrap, run the command to start
 
 ```
 grunt serve
